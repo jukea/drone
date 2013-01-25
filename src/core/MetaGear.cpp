@@ -1,8 +1,9 @@
 #include "MetaGear.h"
 #include "gearFactory/GearInfo.h"
 #include "XMLHelper.h"
-
+#include "HierarchyManager.h"
 #include <qfileinfo.h>
+#include <QList>
 
 const QColor MetaGear::METAGEAR_COLOR(115,8,8);
 const QString MetaGear::TYPE="MetaGear";
@@ -13,6 +14,10 @@ Gear(TYPE),
 _metaGearName(TYPE)
 {
   _schema = new Schema(*this);
+  
+  HierarchyManager* hm=HierarchyManager::getInstance();
+  QObject::connect(_schema,SIGNAL(gearAdded(Schema&,Gear&)),hm,SLOT(onGearAdded(Schema&,Gear&)));
+  QObject::connect(_schema,SIGNAL(gearPreRemoved(Schema&,Gear&)),hm,SLOT(onGearPreRemoved(Schema&,Gear&)));
 }
 
 MetaGear::~MetaGear()
@@ -20,6 +25,28 @@ MetaGear::~MetaGear()
   //TODOFOO: check this!!?
   //_schema.removeAllGears();
   //_schema->removeSchemaEventListener(this);
+}
+
+QList<MetaGear*> MetaGear::getPathToSelf()
+{
+
+  MetaGear* cur = this, *root(HierarchyManager::getInstance()->getRootMetaGear());
+  QList<MetaGear*> path;
+
+  while (cur != root)
+  {
+    path<<cur;
+    qDebug()<<cur<<"!="<<root;
+    cur=cur->parentSchema()->getParentMetaGear();
+  }
+  path<<root;
+ 
+  // reverse path
+  for(int k = 0; k < (path.size()/2); k++) path.swap(k,path.size()-(1+k));
+  
+  return path;
+
+
 }
 
 void MetaGear::internalSave(QDomDocument &doc, QDomElement &parent)
@@ -147,10 +174,9 @@ bool MetaGear::load(QString filename)
   //save the path
   _fullPath = filename;
   
-  //load
+  //do the actual load
   
-  //JK: huh ? static method ? why ?
-//  Gear::load(metagearElem);
+  Gear::load(metagearElem,Drone::LoadFromFile);
 
   return true;
 }

@@ -28,12 +28,14 @@
 #include <QMenu>
 #include <sstream>
 #include "commands/CommandMoveItems.h"
+#include "HierarchyManager.h"
 
 #include "Play.xpm"
 #include "Pause.xpm"
 #include "GearGui.h"
 #include "error.h"
 
+#include "Breadcrumb.h"
 #include "SchemaGui.h"
 #include "SchemaEditor.h"
 #include "MetaGear.h"
@@ -55,12 +57,8 @@
 
 #include <QSplitter>
 #include <QLayout>
-//Added by qt3to4:
-#include <Q3VBoxLayout>
-#include <Q3BoxLayout>
-
-
-//#include "PreferencesDialog.h"
+#include <QVBoxLayout>
+#include <QBoxLayout>
 
 const int MainWindow::MAX_RECENT_SCHEMAS = 5;
 const QString MainWindow::SCHEMA_EXTENSION = ".drn";
@@ -91,8 +89,8 @@ _menuShowSmallGearsId(false)
 {    
   _engine = new Engine(0);    
   _rootMetaGear = _engine->mainMetaGear();
-
-
+  _activeMetaGear = _rootMetaGear;
+  HierarchyManager::getInstance()->setRootMetaGear(_rootMetaGear);
   
   ////////////////////////// old code that was in MetaGearEditor.h :
   
@@ -113,14 +111,12 @@ _menuShowSmallGearsId(false)
 
   QWidget* schemaEditorContainer=new QWidget(_horizontalSplitter);
   QBoxLayout *layout2 = new QVBoxLayout(schemaEditorContainer, 1);
-
-  QWidget* breadcrumb = new QWidget(schemaEditorContainer);
-  breadcrumb->setFixedHeight(20);
+  _breadcrumb = new Breadcrumb(schemaEditorContainer);
   
   _schemaEditor = new SchemaEditor(schemaEditorContainer, _mainSchemaGui, _engine, _panelScrollView);  
   
   
-  layout2->addWidget(breadcrumb);
+  layout2->addWidget(_breadcrumb);
   layout2->addWidget(_schemaEditor);
 
   _horizontalSplitter->moveToFirst(_verticalSplitter);
@@ -252,15 +248,25 @@ MainWindow::~MainWindow()
 
 }
 
-void MainWindow::openMetaGear(MetaGear* metagear)
+void MainWindow::popBreadcrumb()
 {
-  Q_ASSERT(metagear);
-  Schema* schema(metagear->getInternalSchema());
-  Q_ASSERT(schema);
-  
-  _schemaEditor->setSchemaGui(static_cast<SchemaGui*>(schema->getSchemaGui()));
   
 }
+  
+
+void MainWindow::openMetaGear(QString metaGearUuid)
+{
+
+  MetaGear* metagear = HierarchyManager::getInstance()->getMetaGearByUUID(metaGearUuid);
+
+  Q_ASSERT(metagear);
+  Schema * schema(metagear->getInternalSchema());
+  Q_ASSERT(schema);
+  _activeMetaGear = metagear;
+  _schemaEditor->setSchemaGui(static_cast<SchemaGui*> (schema->getSchemaGui()));
+  _breadcrumb->setValue(metagear->getPathToSelf());
+}
+
 
 
 void MainWindow::slotItemsMoved(QList<QString>&itemUUIDs, QPointF dist)

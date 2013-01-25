@@ -35,6 +35,7 @@ unix:!macx:TARGET = ../../drone
 
 HEADERS += commands/CommandMoveItems.h \
 commands/CommandGeneric.h \
+Breadcrumb.h \ 
 config.h \
 ConnectionItem.h \
 GearGui.h \
@@ -69,6 +70,7 @@ SOURCES += commands/CommandMoveItems.cpp \
 commands/CommandGeneric.cpp \
 drone.cpp \
 GearGui.cpp \
+Breadcrumb.cpp \ 
 ControlPanel.cpp \ 
 ConnectionItem.cpp \
 GearListMenu.cpp \

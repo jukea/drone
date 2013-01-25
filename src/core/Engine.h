@@ -41,6 +41,7 @@ class MetaGear;
 
 class Engine : public QObject
 {
+  Q_OBJECT
 public:
 
   Engine(int hwnd);
@@ -78,7 +79,7 @@ protected slots:
 
   //ISchemaEventListener Interface implementation
 	void onGearAdded(Schema &schema, Gear &gear);
-  void onGearRemoved(Schema &schema, Gear &gear);
+  void onGearPreRemoved(Schema &schema, Gear &gear);
 
 public:
   void setClipboardText(QString txt){_clipboard=txt;}

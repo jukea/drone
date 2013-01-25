@@ -87,9 +87,9 @@ signals:
 public slots:
   void selectionHasChanged();
   void onGearAdded(Schema &schema,Gear &gear);
-  void slotGearRemoved(Schema &schema,Gear &gear);
+  void onGearPreRemoved(Schema &schema,Gear &gear);
   void onConnectionCreated(Schema &schema, Connection conn);
-  void onConnectionRemoved(Schema &schema, Connection conn);
+  void onConnectionPreRemoved(Schema &schema, Connection conn);
 
 protected:
 

@@ -47,6 +47,7 @@ Gear.h \
 GearControl.h \
 GearFrei0r.h \
 GearConverter.h \
+HierarchyManager.h \
 Media.h \
 MediaPool.h \
 MediaMovie.h \
@@ -106,6 +107,7 @@ Engine.cpp \
 Gear.cpp \
 GearControl.cpp \
 GearFrei0r.cpp \
+HierarchyManager.cpp \
 Math.cpp \
 MediaPool.cpp \
 MediaMovie.cpp \

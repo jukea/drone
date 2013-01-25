@@ -88,10 +88,11 @@ Gear* GearMaker::makeGear(QString type)
   }
 
 	thegear = gearInfo->createGearInstance();
+  if(thegear==NULL)
+    return NULL;
 	thegear->setGearInfo(gearInfo);
   thegear->setUUID(DroneCore::newUUID());
-	if (thegear)
-		thegear->init();
+	thegear->init();
 		
 	return thegear;
 }
@@ -107,7 +108,10 @@ Gear* GearMaker::makeGear(QString type, QString name)
  */
 MetaGear* GearMaker::makeNewMetaGear()
 {
-  return new MetaGear();
+  MetaGear* mg = new MetaGear();
+	mg->setUUID(DroneCore::newUUID());
+	mg->init();
+  return mg;
 }
 
 

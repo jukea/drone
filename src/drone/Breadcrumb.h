@@ -8,12 +8,27 @@
 #ifndef BREADCRUMB_H
 #define	BREADCRUMB_H
 
-class Breadcrumb: public QWidget {
+class MetaGear;
+
+#include <QPushButton>
+
+class Breadcrumb: public QAbstractButton {
+
+  Q_OBJECT
 public:
   Breadcrumb(QWidget * parent);
   virtual ~Breadcrumb();
-private:
 
+public slots:
+  void onClick();
+    
+  void setValue(QList<MetaGear*> b);
+
+  private:
+  void paintEvent(QPaintEvent *e);
+  void drawWidget(QPainter &qp);
+  QList<MetaGear*> _list;
+  QString _str;
 };
 
 #endif	/* BREADCRUMB_H */

@@ -44,6 +44,7 @@ class MetaGear;
 class MetaGear;
 class PanelScrollView;
 class SchemaEditor;
+class Breadcrumb;
 class SchemaGui;
 class Engine;
 class QSplitter;
@@ -57,7 +58,6 @@ class MainWindow : public QMainWindow
   //friend class GuileBindings;
   
 public:
-
   //! loads the specified schema file
   void load(QString filename);
   //void play(bool pl);
@@ -66,11 +66,12 @@ public:
   MainWindow();
   ~MainWindow();
   void finalize();
+  void popBreadcrumb();
   
   void pushUndoCommand(QUndoCommand* c);
   SchemaGui* getSchemaGui() const {return _mainSchemaGui;}
   Project* getProject(){return _project;}
-  void openMetaGear(MetaGear* metagear);
+  void openMetaGear(QString metaGearUuid);
 public slots:
   void slotPlay(bool);
   void slotItemsMoved(QList<QString> &itemNames, QPointF dist);
@@ -88,7 +89,8 @@ public slots:
 	void slotMenuViewSmallGears();
 
   void slotMenuItemSelected(int id);
-
+    
+  
   // place me somewhere else when you have time.
   // Not really the job of the main window
   void initFonts();
@@ -106,7 +108,7 @@ private:
 
   void addToRecentSchema(QString filename);
   
-
+  Breadcrumb* _breadcrumb;
   Engine* _engine;
   QFrame* _frame;
   SchemaGui* _mainSchemaGui;
@@ -164,6 +166,8 @@ protected:
 
 
   MetaGear *_rootMetaGear;
+  MetaGear *_activeMetaGear;
+  
 
   QSplitter *_horizontalSplitter;
   QSplitter *_verticalSplitter;

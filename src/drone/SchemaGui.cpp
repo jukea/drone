@@ -81,9 +81,9 @@ void SchemaGui::setSchema(Schema *schema)
   _schema->setSchemaGui(this);
   
   QObject::connect(schema,SIGNAL(gearAdded(Schema&,Gear&)),this,SLOT(onGearAdded(Schema&,Gear&)));
-  QObject::connect(schema,SIGNAL(gearRemoved(Schema&,Gear&)),this,SLOT(slotGearRemoved(Schema&,Gear&)));
+  QObject::connect(schema,SIGNAL(gearPreRemoved(Schema&,Gear&)),this,SLOT(onGearPreRemoved(Schema&,Gear&)));
   QObject::connect(schema,SIGNAL(connectionCreated(Schema&,Connection)),this,SLOT(onConnectionCreated(Schema&,Connection)));
-  QObject::connect(schema,SIGNAL(connectionRemoved(Schema&,Connection)),this,SLOT(onConnectionRemoved(Schema&,Connection)));
+  QObject::connect(schema,SIGNAL(connectionPreRemoved(Schema&,Connection)),this,SLOT(onConnectionPreRemoved(Schema&,Connection)));
   
   //_schema->add
   rebuildSchema();
@@ -106,7 +106,7 @@ void SchemaGui::onGearAdded(Schema &schema,Gear &gear)
   }
 }
 
-void SchemaGui::slotGearRemoved(Schema &schema,Gear &gear)
+void SchemaGui::onGearPreRemoved(Schema &schema,Gear &gear)
 {
   Q_UNUSED(schema);
   if(gear.getGearGui())
@@ -270,7 +270,7 @@ void SchemaGui::removeGear(GearGui* gearGui)
   Gear* gear = gearGui->gear();
 
   _schema->removeDeepGear(gear);
-  // let the "Schema" signal (gearRemoved) call carRemoved 
+  // let the "Schema" signal (gearPreRemoved) call carRemoved 
   // to do the actual GearGui deletion
   update();
 }
@@ -558,7 +558,7 @@ void SchemaGui::onConnectionCreated(Schema &schema, Connection c)
 }
 
 
-void SchemaGui::onConnectionRemoved(Schema &schema, Connection c)
+void SchemaGui::onConnectionPreRemoved(Schema &schema, Connection c)
 {
   Q_UNUSED(schema);
   QPair<PlugBox*, PlugBox*> conn(getPlugBoxesFromConnection(c));

@@ -89,7 +89,7 @@ public:
 
   //todo make bool
   void save(QDomDocument &, QDomElement &);
-  void load(QDomElement &, Drone::LoadingModeFlags lmf, bool loadUUID=true);
+  void load(QDomElement &, Drone::LoadingModeFlags lmf);
  
   virtual bool canConvert(const AbstractType& , const AbstractType& ,
                           std::pair<const AbstractPlug*, const AbstractPlug*>& plugs) const
@@ -120,7 +120,7 @@ public:
 
   virtual void internalInit(){}
   virtual void internalSave(QDomDocument&, QDomElement&){}
-  virtual void internalLoad(QDomElement &){};
+  virtual void internalLoad(QDomElement &, Drone::LoadingModeFlags lmf){Q_UNUSED(lmf)};
   
   virtual void internalPrePlay(){}  
   virtual void internalPostPlay(){}    

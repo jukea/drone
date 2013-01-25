@@ -9,6 +9,7 @@
 
 class MetaGear : public Gear
 {
+  Q_OBJECT
 public:  
   MetaGear();
   virtual ~MetaGear();
@@ -23,7 +24,7 @@ public:
   bool load(QString filename);
   
   void createPlugs();
-
+  QList<MetaGear*> getPathToSelf();
   QString fullPath(){return _fullPath;}
   
 protected:

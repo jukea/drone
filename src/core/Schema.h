@@ -82,18 +82,19 @@ public:
   
   void setSchemaGui(BaseSchemaGui* bsg){_schemaGui=bsg;}
   BaseSchemaGui* getSchemaGui(){return _schemaGui;}
-			  	
+  MetaGear* getParentMetaGear();
+  
 signals:
 	void gearAdded(Schema &schema,Gear &gear);
-	void gearRemoved(Schema &schema,Gear &gear);
+	void gearPreRemoved(Schema &schema,Gear &gear);
 	void gearRenamed(Schema &schema,Gear &gear);
 	void connectionCreated(Schema &schema, Connection connection);
-	void connectionRemoved(Schema &schema, Connection connection);
+	void connectionPreRemoved(Schema &schema, Connection connection);
 					
 private:
 
 //	void onGearAdded(Gear &gear);
-//	void onGearRemoved(Gear &gear);
+//	void onGearPreRemoved(Gear &gear);
 
   bool needSynch();
   void synch();

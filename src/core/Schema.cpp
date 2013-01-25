@@ -173,7 +173,7 @@ bool Schema::removeDeepGear(Gear* &gear)
   // if the gear to be removed is at the current schema level, remove it here
   if (_gears.contains(gear->getUUID()))
   {   
-    emit gearRemoved(*this,*gear);
+    emit gearPreRemoved(*this,*gear);
     
     _gears.remove(gear->getUUID());
             
@@ -290,7 +290,7 @@ bool Schema::disconnect(AbstractPlug &plugA, AbstractPlug &plugB)
     if(!ret)
       return false;
     Connection c(plugA.parent()->getUUID(),plugA.name(),plugB.parent()->getUUID(),plugB.name());
-    emit connectionRemoved(*this,c);
+    emit connectionPreRemoved(*this,c);
   }
   return true;
 }
@@ -428,7 +428,6 @@ bool Schema::load(QDomElement& parent, Drone::LoadingModeFlags lmf)
           QString newUUID = newGear->getUUID();
           QString oldUUID = gearElem.attribute("UUID", "");
           //addGear to schema with UUID "newUUID"
-          addGear(*newGear);
           //qDebug()<<"GEARS:"<<_gears.keys();
 
           newGear->load(gearElem,lmf);
@@ -442,14 +441,7 @@ bool Schema::load(QDomElement& parent, Drone::LoadingModeFlags lmf)
             newGear->setUUID(newUUID);
             renameMap[oldUUID] = newUUID;
           }
-          else
-          {
-            // the gear UUID will be oldUUID. It's already attributed to the gear
-            // by the previous call to "load". Last thing, we must correct the _gears registry
-            // because newGear has been added to it with it's initial "newUUID"
-            _gears.remove(newUUID);
-            _gears[newGear->getUUID()]=newGear;
-          }
+          addGear(*newGear);
           visitedGears<<newGear->getUUID();
         }
 
@@ -565,11 +557,15 @@ void Schema::unlock()
   _scheduledDisconnections.clear();  
 }
 
-Schema *Schema::getParentSchema()
+Schema* Schema::getParentSchema()
 {
   return _parentMetaGear->parentSchema();
 }
 
+MetaGear* Schema::getParentMetaGear()
+{
+  return _parentMetaGear;
+}
 
 
 /*
@@ -583,14 +579,14 @@ void Schema::onGearAdded(Gear &gear)
     parentSchema->onGearAdded(gear);
 }
 
-void Schema::onGearRemoved(Gear &gear)
+void Schema::onGearPreRemoved(Gear &gear)
 {
-	emit gearRemoved(*this, gear);
+	emit gearPreRemoved(*this, gear);
 	
   //foward up the event to the parent schema
   Schema *parentSchema = getParentSchema();
   if (parentSchema)
-    parentSchema->onGearRemoved(gear);
+    parentSchema->onGearPreRemoved(gear);
 }
 */
 

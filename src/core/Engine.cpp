@@ -22,6 +22,7 @@
 #include "Gear.h"
 #include "MetaGear.h"
 #include "Schema.h"
+#include "gearFactory/GearMaker.h"
 #include <iostream>
 #include <unistd.h>
 
@@ -36,9 +37,9 @@ Engine::Engine(int hwnd) :
   _graphSynched(false),
   _playing(false)
 {  
-  _mainMetaGear = new MetaGear();  
+  _mainMetaGear = GearMaker::instance()->makeNewMetaGear();  
   QObject::connect(_mainMetaGear->getInternalSchema(), SIGNAL(gearAdded(Schema&, Gear&)), this, SLOT(onGearAdded(Schema&, Gear&)));
-  QObject::connect(_mainMetaGear->getInternalSchema(), SIGNAL(gearRemoved(Schema&, Gear&)), this, SLOT(onGearRemoved(Schema&, Gear&)));
+  QObject::connect(_mainMetaGear->getInternalSchema(), SIGNAL(gearPreRemoved(Schema&, Gear&)), this, SLOT(onGearPreRemoved(Schema&, Gear&)));
 
 }
 
@@ -221,7 +222,7 @@ void Engine::onGearAdded(Schema&, Gear &gear)
     gear.prePlay();  
 }
 
-void Engine::onGearRemoved(Schema&, Gear &gear)
+void Engine::onGearPreRemoved(Schema&, Gear &gear)
 {
   if (_playing)
     gear.postPlay();

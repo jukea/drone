@@ -242,17 +242,16 @@ void Gear::save(QDomDocument &doc, QDomElement &parent)
   internalSave(doc, gearElem);
 }
 
-void Gear::load(QDomElement &gearElem, Drone::LoadingModeFlags lmf, bool loadUUID)               
+void Gear::load(QDomElement &gearElem, Drone::LoadingModeFlags lmf)               
 {            
   Q_UNUSED(lmf);
   _instanceName = gearElem.attribute("Name","");
-  if(loadUUID)
-    _uuid = gearElem.attribute("UUID","");
+  _uuid = gearElem.attribute("UUID","");
 
   _settings.load(gearElem);  
   //updateSettings();
 
-  internalLoad(gearElem);
+  internalLoad(gearElem,lmf);
 
   if(_gearGui)
     _gearGui->load(gearElem);

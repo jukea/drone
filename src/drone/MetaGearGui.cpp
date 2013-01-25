@@ -21,6 +21,7 @@ MetaGearGui::~MetaGearGui()
 
 void MetaGearGui::mouseDoubleClickEvent ( QGraphicsSceneMouseEvent * event )
 {
-  MainWindow::getInstance()->openMetaGear(static_cast<MetaGear*>(_gear));
+  Q_UNUSED(event);
+  MainWindow::getInstance()->openMetaGear(_gear->getUUID());
 }
 
