@@ -25,6 +25,7 @@
 #include "Control.h"
 #include "GearControl.h"
 #include "MetaGear.h"
+#include "MetaGearGui.h"
 #include "gearFactory/GearMaker.h"
 #include "GearGui.h"
 #include "PlugBox.h"
@@ -197,7 +198,7 @@ Gear* SchemaGui::addGear(QString fullname, QPointF pos)
   gear->setGearGui(gearGui);
   addItem(gearGui);    
   gearGui->setPos(pos);    
-  gearGui->setZValue(0);
+  gearGui->setZValue(_maxZValue);
   gearGui->update();
   
   _schema->addGear(*gear);
@@ -242,19 +243,22 @@ void SchemaGui::renameGear(GearGui *gearGui, QString newName)
 
 MetaGear* SchemaGui::newMetaGear(QPointF pos)
 { 
-  Q_UNUSED(pos);
-  /*
-  MetaGear *metaGear = _schema->newMetaGear();    
-  GearGui *gearGui = metaGear->getGearGui();    
-
-  addItem(gearGui);
-  gearGui->setZValue(0);
-  gearGui->setPos(pos);
-  gearGui->show();
-  update();
+  CommandGeneric* com = new CommandGeneric();
+  MetaGear *metaGear = GearMaker::instance()->makeNewMetaGear();    
   
-  return metaGear;*/
-  return NULL;
+  MetaGearGui *gearGui = new MetaGearGui(metaGear);    
+  metaGear->setGearGui(gearGui);
+  addItem(gearGui);    
+  gearGui->setPos(pos);    
+  gearGui->setZValue(_maxZValue);
+  gearGui->update();
+  
+  _schema->addGear(*metaGear);
+  update();
+  com->saveSnapshotAfter();
+  com->setText(QString("Added a gear"));
+  MainWindow::getInstance()->pushUndoCommand(com);
+  return metaGear;
 }
 
 void SchemaGui::removeGear(GearGui* gearGui)
@@ -396,7 +400,6 @@ void SchemaGui::mouseMoveEvent(QGraphicsSceneMouseEvent * event)
     foreach(el, selectedList)
     {
       gearGui = qgraphicsitem_cast<GearGui*>(el);
-      if (gearGui)qDebug() << gearGui->gear()->name();
       if (gearGui && (el->flags() & QGraphicsItem::ItemIsMovable))
         _movingItems << gearGui->gear()->getUUID();
     }
@@ -416,19 +419,20 @@ void SchemaGui::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)
 
   foreach(el, list)
   {
-    qDebug()<< "found item";
-
     if ((ci = qgraphicsitem_cast<ConnectionItem*>(el)))
     {
       CommandGeneric* com = new CommandGeneric();
 
       disconnect(ci->sourcePlugBox(), ci->destPlugBox());
-          com->saveSnapshotAfter();
-          com->setText(QString("Disconnected gears"));
-          MainWindow::getInstance()->pushUndoCommand(com);
+      com->saveSnapshotAfter();
+      com->setText(QString("Disconnected gears"));
+      MainWindow::getInstance()->pushUndoCommand(com);
+
+      event->accept();
       return;
     }
   }
+  QGraphicsScene::mouseDoubleClickEvent(event);
 
 }
 

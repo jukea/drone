@@ -46,6 +46,7 @@ public:
 
   Gear* makeGear(QString fullName);
 	Gear* makeGear(QString type, QString name);
+  MetaGear* makeNewMetaGear();
 
   void getAllGearsInfo(QList<GearInfo*> &gearsInfo);
 	GearInfo* findGearInfo(QString fullName);

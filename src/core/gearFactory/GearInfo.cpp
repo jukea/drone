@@ -173,6 +173,7 @@ void GearInfo::syncPlugsInfo()
 
 	//remove plugsInfo that doesnt exist anymore
 	QList<QString> plugsToRemove;
+  qDebug()<<_plugsInfo.keys();
   for (QMap<QString,PlugInfo>::Iterator it = _plugsInfo.begin(); it != _plugsInfo.end(); ++it )
 	{
 		if (!gear->getPlug(it.key()))

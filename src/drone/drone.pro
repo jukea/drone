@@ -45,6 +45,7 @@ GearPropertiesDialog.h \
 MediaPoolIconView.h \
 MediaPoolItem.h \
 MainWindow.h \
+MetaGearGui.h \
 MetaGearEditor.h \
 MetaGearListMenu.h \
 MediaPoolDialog.h \
@@ -78,6 +79,7 @@ GearPropertiesDialog.cpp \
 MainWindow.cpp \
 MediaPoolIconView.cpp \
 MediaPoolItem.cpp \
+MetaGearGui.cpp \
 MetaGearEditor.cpp \
 MetaGearListMenu.cpp \
 MediaPoolDialog.cpp \

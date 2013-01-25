@@ -25,7 +25,7 @@ namespace Drone{
 
 QString DroneCore::newUUID()
 {
-  return QUuid().toString();
+  return QUuid::createUuid().toString();
 }
 
 

@@ -49,7 +49,6 @@ Media.h \
 MediaPool.h \
 MediaMovie.h \
 MetaGear.h \
-MetaGearMaker.h \
 Node.h \ 
 MidiEngine.h \
 Plug.h \

@@ -35,7 +35,6 @@
 #include "GearPropertiesDialog.h"
 #include "gearFactory/GearMaker.h"
 #include "gearFactory/GearMaker.h"
-#include "MetaGearMaker.h"
 
 #include <q3mainwindow.h>
 #include <q3filedialog.h>
@@ -190,7 +189,7 @@ void SchemaEditor::onPlugToggleExpose()
 
 void SchemaEditor::onNewMetaGear()
 {
-  _schemaGui->newMetaGear(_contextMenuPos);
+  _schemaGui->newMetaGear(mapToScene(_contextMenuPos));
 }
 
 void SchemaEditor::onSaveMetaGear()

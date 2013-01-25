@@ -121,8 +121,8 @@ bool Schema::needSynch()
     return true;
   
   QList<Schema*> subschemas = getSubSchemas();
-  for(QList<Schema*>::iterator it = subschemas.begin(); it!=subschemas.end();++it)
-    if((*it)->needSynch())
+  foreach(Schema* schema,subschemas)
+    if(schema->needSynch())
       return true;
   
   return false;
@@ -192,7 +192,7 @@ bool Schema::removeDeepGear(Gear* &gear)
 
 void Schema::renameGear(Gear& gear, QString newName)
 {  
-	if (gear.name() == newName)
+	if (gear.instanceName() == newName)
 		return;
 }
 

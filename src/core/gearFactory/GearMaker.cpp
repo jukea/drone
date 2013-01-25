@@ -19,6 +19,7 @@
 
 #include "DroneCore.h"
 #include "Gear.h"
+#include "MetaGear.h"
 #include "GearMaker.h"
 #include "GearFrei0r.h"
 #include "GearControl.h"
@@ -99,6 +100,16 @@ Gear* GearMaker::makeGear(QString type, QString name)
 {
 	return makeGear(type + ":" + name);
 }
+
+
+/**
+ * Creates an instance of meta gear.
+ */
+MetaGear* GearMaker::makeNewMetaGear()
+{
+  return new MetaGear();
+}
+
 
 /*
 GearInfo* GearMaker::findGearInfo(QString type, QString name)

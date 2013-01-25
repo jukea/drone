@@ -214,9 +214,9 @@ void GearGui::rebuildLayout()
 {
   // compute gear name width
   QFontMetrics fm(NAME_FONT);
-  qreal name_width = fm.width(_gear->name());
+  qreal name_width = fm.width(_gear->instanceName());
   qreal sizeX,sizeY;
-  
+
   if(_control!=NULL)
   {
     _controlWidth = _control->size().width();
