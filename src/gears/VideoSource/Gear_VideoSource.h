@@ -27,38 +27,80 @@
 #include "SignalType.h"
 #include "StringType.h"
 #include "EnumType.h"
+#include "Utils.h"
 
 extern "C" {
-#include "libavcodec/avcodec.h"
-#include "libavformat/avformat.h"
-#include "libswscale/swscale.h" 
+  #include <gst/gst.h>
+  #include <gst/app/gstappsink.h>
+  #include <gst/base/gstadapter.h>
 }
 
 
 class Gear_VideoSource : public Gear
 {
 public:
-  enum ePlaybackMode
-  {
-    NORMAL,
-    LOOP,
-    N_PLAYBACK_MODE
-  };
-  
-  static const QString SETTING_FILENAME;
-
   Gear_VideoSource();
   virtual ~Gear_VideoSource();
 
   void runVideo();
+  void runAudio();
 
 protected:
   bool loadMovie(QString filename);
+  void unloadMovie();
+  void freeResources();
+  void resetMovie();
+
+  virtual void internalPrePlay();
+  virtual void internalPostPlay();
 
 private:
+  bool _videoPull();
+  bool _eos() const;
+//  void _finish();
+//  void _init();
 
-  void freeResources();
+  bool _preRun();
+  void _postRun();
+  bool _setPlayState(bool play);
+  void _setReady(bool ready);
 
+public:
+  // GStreamer callbacks.
+
+  struct GstPadHandlerData {
+    GstElement* audioToConnect;
+    GstElement* videoToConnect;
+    GstElement* videoSink;
+    bool audioIsConnected;
+    bool videoIsConnected;
+
+    GstPadHandlerData() :
+      audioToConnect(NULL), videoToConnect(NULL), videoSink(NULL),
+      audioIsConnected(false), videoIsConnected(false)
+    {}
+
+    bool isConnected() const {
+      return (audioIsConnected && videoIsConnected);
+    }
+  };
+
+  struct GstNewAudioBufferHandlerData {
+    GstElement* audioSink;
+    GstAdapter* audioBufferAdapter;
+    GstNewAudioBufferHandlerData() : audioSink(NULL), audioBufferAdapter(NULL) {}
+  };
+
+  // GStreamer callback that simply sets the #newBuffer# flag to point to TRUE.
+  static void gstNewBufferCallback(GstElement *sink, int *newBufferCounter);
+
+  static void gstNewAudioBufferCallback(GstElement *sink, GstNewAudioBufferHandlerData *data);
+
+  // GStreamer callback that plugs the audio/video pads into the proper elements when they
+  // are made available by the source.
+  static void gstPadAddedCallback(GstElement *src, GstPad *newPad, Gear_VideoSource::GstPadHandlerData* data);
+
+private:
   PlugOut<VideoRGBAType> *_VIDEO_OUT;
   PlugOut<SignalType> *_AUDIO_OUT;
 	PlugOut<ValueType> *_FINISH_OUT;
@@ -69,22 +111,31 @@ private:
 
   //locals
   QString _currentMovie;  
-  float *_audioBuffer;
-  //RGBA *_outData;  
-  long _previousFramePos;
 	
+  // gstreamer
+  GstBus *_bus;
+  GstElement *_pipeline;
+  GstElement *_source;
+  GstElement *_audioQueue;
+  GstElement *_audioConvert;
+  GstElement *_audioResample;
+  GstElement *_videoQueue;
+  GstElement *_videoConvert;
+  GstElement *_videoColorSpace;
+  GstElement *_audioSink;
+  GstElement *_videoSink;
 
-  //ffmpeg
-  AVFormatContext *_formatContext;  
-  AVCodecContext *_codecContext;
-  AVCodec *_codec;
-  AVPacket _packet;
-  AVFrame *_frame;
-  AVFrame *_frameRGBA;
-  struct SwsContext *_sws_ctx;
-  uint8_t *_buffer;
-  int _videoStreamIndex;
-  int64_t _firstFrameTime;
+  GstAdapter *_audioBufferAdapter;
+
+  GstPadHandlerData _padHandlerData;
+  GstNewAudioBufferHandlerData _newAudioBufferHandlerData;
+
+  bool _seekEnabled;
+
+  int _audioNewBufferCounter;
+  int _videoNewBufferCounter;
+
+  bool _terminate;
   bool _movieReady;
 };
 

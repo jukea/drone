@@ -25,9 +25,7 @@
 
 class EnumType : public ArrayType<QString>
 {
-public:
-  static const QString TYPENAME;
-  
+public:  
   EnumType(int size = 1, int defaultValue=0)
     : ArrayType<QString>(size)
   {
@@ -36,8 +34,7 @@ public:
   
   virtual ~EnumType() {}
   
-  virtual QString typeName() const { return "EnumType"; }  
-  virtual QColor color() const { return QColor(238,19,19); }
+  TYPE_BASE_METHODS(EnumType, (238, 19, 19))
   
   void setValue(int value) {
     ASSERT_ERROR(empty() || (0 <= value && value < (int)size()));

@@ -20,7 +20,7 @@
 #ifndef SCHEMAEGUI_INCLUDED
 #define SCHEMAEGUI_INCLUDED
 
-#include <QGraphicsScene.h>
+#include <QGraphicsScene>
 #include <QFileInfo>
 #include <QMenu>
 #include "Schema.h"

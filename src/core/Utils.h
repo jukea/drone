@@ -24,6 +24,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <iostream>
+#include <inttypes.h>
+#include <string.h>
 
 #include "ColorSpace.h"
 #include "error.h"
@@ -48,6 +50,8 @@ inline unsigned char fastrgb2gray(unsigned char r, unsigned char g, unsigned cha
 //! Vector version. Sets #dst# to the grayscale of #src#.
 inline void grayscaleRGBA(RGBA *dst, const RGBA *src, size_t size)
 {
+  ASSERT_ERROR(dst != NULL);
+  ASSERT_ERROR(src != NULL);
   unsigned int gray;
   unsigned int *it = (unsigned int *)dst;
   while (size--)
@@ -61,6 +65,8 @@ inline void grayscaleRGBA(RGBA *dst, const RGBA *src, size_t size)
 //! Puts in #dst# the grayscale values of #src#.
 inline void grayscaleChannel(unsigned char *dst, const RGBA *src, size_t size)
 {
+  ASSERT_ERROR(dst != NULL);
+  ASSERT_ERROR(src != NULL);
   while (size--)
   {
     *dst++ = rgb2gray(src->r, src->g, src->b);
@@ -71,6 +77,8 @@ inline void grayscaleChannel(unsigned char *dst, const RGBA *src, size_t size)
 //! Puts the #channelIdx#-th channel of #src# (i.e. one of the IDX_RGBA_{R,G,B,A} constants) in #dst#.
 inline void extractChannel(unsigned char *dst, const RGBA *src, size_t size, int channelIdx)
 {
+  ASSERT_ERROR(dst != NULL);
+  ASSERT_ERROR(src != NULL);
   ASSERT_ERROR(0 <= channelIdx && channelIdx < SIZE_RGBA);
   unsigned char *it = (unsigned char*)(src) + channelIdx; // offset
   while (size--)
@@ -78,6 +86,28 @@ inline void extractChannel(unsigned char *dst, const RGBA *src, size_t size, int
     *dst++ = *it;
     it += SIZE_RGBA;
   }
+}
+
+//! Fast converts 24-bits color to 32 bits (alpha is set to specified alpha value).
+// Based on: http://stackoverflow.com/questions/7069090/convert-rgb-to-rgba-in-c
+inline void convert24to32(unsigned char *dst, const unsigned char *src, size_t size, unsigned char alpha=0xff) {
+  ASSERT_ERROR(dst != NULL);
+  ASSERT_ERROR(src != NULL);
+  if (size==0) return;
+  uint32_t alphaMask = ((uint32_t)alpha) << 24;
+  // Copy by 4 byte blocks.
+  for (size_t i=size; --i; dst+=4, src+=3)
+  {
+    *(uint32_t*)(void*)dst = (*(const uint32_t*)(const void*)src) | alphaMask;
+  }
+  // Copy remaining bytes.
+  *dst++ = *src++;
+  *dst++ = *src++;
+  *dst++ = *src++;
+}
+
+inline void rgb2rgba(RGBA *dst, const RGB *src, size_t size, unsigned char alpha=0xff) {
+  convert24to32((unsigned char*)dst, (const unsigned char*)src, size, alpha);
 }
 
 // # Image rescaling function ###############################################
@@ -140,8 +170,11 @@ inline void rescale_image(RGBA *dst, const RGBA *src, int dstWidth, int dstHeigh
  * to change if we support bigger formats. We'll do it so for now because
  * masking is always cheaper than passing parameters over the stack.      */
 /* FIXME: Move to a global place */
-//#define HAS_ALPHA(bytes) (~bytes & 1)
+
+#ifndef HAS_ALPHA
 #define HAS_ALPHA(bytes) (~bytes & 1)
+//#define HAS_ALPHA(bytes) 0 // XXX pour le moment on l'utilise pas, donc...
+#endif
 
 static unsigned char       add_lut[511];
 static int                 random_table[RANDOM_TABLE_SIZE];

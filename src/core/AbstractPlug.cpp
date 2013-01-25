@@ -53,7 +53,10 @@ AbstractPlug::AbstractPlug(Gear* parent, eInOut inOut, QString name, AbstractTyp
   _exposed(false)
 {
   //une plug a besoin d'un parent
-  assert(parent!=NULL);
+  ASSERT_ERROR(parent!=NULL);
+
+  if (type == NULL)
+    qCritical() << Q_FUNC_INFO << " was provided with type = NULL";
 
   forwardPlug(0);
 }
@@ -72,15 +75,24 @@ bool AbstractPlug::canConnect(AbstractPlug *plug, bool onlyTypeCheck)
   if (_connectedPlugs.contains(plug))
     return false;
 
-  //est-ce que ce sont des plugs de meme type
-  if ( !((_abstractType->typeName()=="AbstractType") || (plug->abstractType()->typeName()=="AbstractType")|| (_abstractType->typeName() == plug->abstractType()->typeName())))
-    return false;
-
   //avons-nous bien une connection d'un in dans un out ou vice-versa
   if (_inOut == plug->inOut())
     return false;
 
-  //assurer seulement une connection par input
+
+  // Prevent downcasting.
+  if (_inOut == IN)
+  {
+    if (! plug->abstractType()->isSubClassOf(*_abstractType))
+      return false;
+  }
+  else
+  {
+    if (! plug->abstractType()->isSuperClassOf(*_abstractType))
+      return false;
+  }
+
+    //assurer seulement une connection par input
   if (!onlyTypeCheck)
   {
     if (_inOut == IN)

@@ -41,8 +41,7 @@ public:
 
   virtual ~SignalType(){}
 
-  virtual QString typeName() const { return "Signal";}
-  QColor color() const { return QColor(249,169,7);}
+  TYPE_BASE_METHODS(SignalType, (249, 169, 7))
 };
 
 #endif 

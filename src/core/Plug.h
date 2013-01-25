@@ -59,6 +59,7 @@ public:
     return true;
   }
 
+  void init() {}
 
   AbstractPlug *clone(Gear* parent)
   {
@@ -125,13 +126,17 @@ public:
     else
       setType(_internalType);*/
   }
-  void init(){}
+
+  void init() {}
+
   T* defaultType() { return static_cast<T*>(_abstractDefaultType);}
   T* hintType() { return static_cast<T*>(_abstractDefaultType);}
 
   T* type() const { return static_cast<T*>(_abstractType);}
   const T* defaultType() const { return static_cast<const T*>(_abstractDefaultType);}
   const T* hintType() const { return static_cast<const T*>(_abstractDefaultType);}
+
+  T* cloneType() const { return static_cast<T*>(_abstractType->clone()); }
 
   AbstractPlug *clone(Gear* parent)
   {
@@ -143,6 +148,8 @@ public:
 protected:
   void setType(AbstractType *type)
   {
+    if (type == NULL)
+      qCritical() << Q_FUNC_INFO << " called with type = NULL";
     _abstractType = type;
   }
 

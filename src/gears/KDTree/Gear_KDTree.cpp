@@ -46,8 +46,8 @@ Gear_KDTree::Gear_KDTree()
 
   // Outputs.
   // at least one of them need to be connected. determined at runtime
-  addPlug(_VIDEO_OUT = new PlugOut<VideoRGBAType>(this, false, "ImgOUT"));
-  addPlug(_AREA_OUT = new PlugOut<AreaArrayType>(this, false, "Segm"));
+  addPlug(_VIDEO_OUT = new PlugOut<VideoRGBAType>(this, "ImgOUT", false));
+  addPlug(_AREA_OUT = new PlugOut<AreaArrayType>(this, "Segm", false));
   
   QList<AbstractPlug*> atLeastOneOfThem;
   atLeastOneOfThem.push_back(_VIDEO_OUT);

@@ -31,8 +31,7 @@ public:
 
   virtual ~ListType(){}
 
-  virtual QString typeName() const { return "ListType";}
-  QColor color() const { return QColor(255,255,255);}
+  TYPE_BASE_METHODS(ListType, (255, 255, 255))
 
   
 };

@@ -35,8 +35,7 @@ public:
 
   virtual ~PaletteRGBAType(){}
 
-  QString name() const { return "PaletteRGBAType";}
-  QColor color() const { return QColor(50,124,50);}
+  TYPE_BASE_METHODS(PaletteRGBAType, (50, 124, 50))
 };
 
 #endif 

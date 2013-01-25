@@ -1,4 +1,4 @@
-/* VideoOutputShm.h
+/* VideoOutput.h
  * Copyright (C) 2004 Mathieu Guindon
  * This file is part of Drone.
  *
@@ -17,40 +17,46 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef VIDEOOUTPUTSHM_INCLUDED
-#define VIDEOOUTPUTSHM_INCLUDED
+#ifndef GEAR_SHADER_TEST_INCLUDED
+#define GEAR_SHADER_TEST_INCLUDED
 
-#include "VideoOutputX11Base.h"
 
-namespace X11
-{
+#include <QtOpenGL>
 
-class scene;
+#include "Gear.h"
+#include "TextureType.h"
 
-class VideoOutputShm : public VideoOutputX11Base
+class Gear_ShaderTest : public Gear
 {
 public:
-  VideoOutputShm();
-  ~VideoOutputShm();
 
-  bool init(int xRes, int yRes, bool fullscreen);
-  void render(const VideoRGBAType &image);
+  Gear_ShaderTest(Schema *schema, std::string uniqueName);
+  virtual ~Gear_ShaderTest();
 
+  virtual void runVideo();
+  virtual bool ready();
+
+  
 protected:
-
-
-  XImage* createXImage(int sizeX, int sizeY);
-  void destroyXImage();
-  void onResize(int sizeX, int sizeY);
+  virtual void internalInit();
 
 private:
+  void initializeShaderProgram();
+  //void enumarateActiveUniforms();
+  void enableGLStates();
 
-
-  XImage* _xImage;
-  int _frameSizeX;
-  int _frameSizeY;
-  int _frameSize;
-
+  PlugIn<TextureType> *_TEXTURE_IN;
+  PlugOut<TextureType> *_TEXTURE_OUT;
+  
+  QGLShaderProgram _shaderProgram;
+  int _vertexAttr;
+  int _texCoordAttr;
+  int _textureUniform;
+//  FrameBufferObject _fbo;
+  QGLFramebufferObject *_fbo;
+  
 };
-}
+
+
 #endif
+

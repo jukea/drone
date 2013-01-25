@@ -70,6 +70,15 @@
 
 // #define RANDOM_TABLE_SIZE  4096
 
+/* A drawable has an alphachannel if contains either 4 or 2 bytes data
+ * aka GRAYA and RGBA and thus the macro below works. This will have
+ * to change if we support bigger formats. We'll do it so for now because
+ * masking is always cheaper than passing parameters over the stack.      */
+/* FIXME: Move to a global place */
+
+#ifndef HAS_ALPHA
+#define HAS_ALPHA(bytes) (~bytes & 1)
+#endif
 
 // static guchar add_lut[511];
 // static gint32 random_table[RANDOM_TABLE_SIZE];

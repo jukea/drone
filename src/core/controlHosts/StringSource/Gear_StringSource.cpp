@@ -39,7 +39,7 @@ const QString Gear_StringSource::SETTING_STRING = "Source";
 Gear_StringSource::Gear_StringSource() : 
   Gear("StringSource")
 {
-  addPlug(_STR_OUT = new PlugOut<StringType>(this, "str", false, new StringType("aaa")));
+  addPlug(_STR_OUT = new PlugOut<StringType>(this, "str", false, new StringType("")));
   _settings.add(Property::FILENAME, SETTING_STRING)->valueStr("");
 
   _currentString = "";

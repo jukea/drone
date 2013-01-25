@@ -33,8 +33,8 @@
 #include "ConnectionItem.h"
 #include <QGraphicsSceneMouseEvent>
 #include <QVarLengthArray>
-#include <q3filedialog>
-#include <qtextstream>
+#include <Q3FileDialog>
+#include <QTextStream>
 #include "MainWindow.h"
 
 const int SchemaGui::DEFAULT_CANVAS_SIZE_X = 2048;
@@ -213,8 +213,6 @@ Gear* SchemaGui::addGear(QString fullname, QPointF pos)
 
 MetaGear *SchemaGui::addMetaGear(QString filename, QPointF pos)
 {    
-  Q_UNUSED(filename);
-  Q_UNUSED(pos);
   return NULL;
 /*  MetaGear *metaGear = _schema->addMetaGear(filename);    
 
@@ -338,7 +336,7 @@ void SchemaGui::mousePressEvent(QGraphicsSceneMouseEvent * event)
   QPointF pos;
   GearGui* gearGui;
   PlugBox* selectedPlugBox;
-  QGraphicsItem *el;//, *el2;
+  QGraphicsItem *el, *el2;
 
   foreach(el, list)
   {
@@ -421,6 +419,7 @@ void SchemaGui::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)
   {
     if ((ci = qgraphicsitem_cast<ConnectionItem*>(el)))
     {
+      qDebug()<< "disconnect";
       CommandGeneric* com = new CommandGeneric();
 
       disconnect(ci->sourcePlugBox(), ci->destPlugBox());

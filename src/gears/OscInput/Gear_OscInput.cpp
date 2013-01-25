@@ -1,5 +1,6 @@
 /* Gear_OscInput.cpp
- * Copyright (C) 2004 Mathieu Guindon, Julien Keable
+ * Copyright (C) 2012 Jean-Sebastien Senecal
+ *               2004 Mathieu Guindon, Julien Keable
  * This file is part of Drone.
  *
  * This program is free software; you can redistribute it and/or modify
@@ -53,7 +54,7 @@ Gear_OscInput::~Gear_OscInput()
 
 void Gear_OscInput::runVideo()
 {
-	std::cout << "!@#" << std::endl;
+	//std::cout << "!@#" << std::endl;
 	if (_forceOscServerInit ||
 			_currentPort != _PORT->type()->value())
   {
@@ -63,15 +64,23 @@ void Gear_OscInput::runVideo()
   }
 	
 	OscMessageType message;
-	ListType list;
+//	ListType list;
 	
 	if (_messages.size())
 	{
+    _OSC_OUT->sleeping(false);
 		ScopedLock scopedLock(_mutex);
-		message = _messages.back();
+    message = _messages.back();
+    //std::cout << _messages.size() << " ... Sending: " << message.path().value() << std::endl;
+    //std::cout << " --args size = " << message.args().size() << std::endl;
 		_OSC_OUT->type()->setPath(message.path());
-		_OSC_OUT->type()->setArgs(message.args());
-	}
+    _OSC_OUT->type()->setArgs(message.args());
+    //std::cout << "done" << std::endl;
+    _messages.pop_back();
+	} else
+	  // we should be able to set this to true but it doesn't work (the following gears are considered
+	  // to be not ready even if we
+	  _OSC_OUT->sleeping(true);
 
 }
 
@@ -114,34 +123,33 @@ int Gear_OscInput::configuredOscHandler(const char *path, const char *types, lo_
 	std::cout << "Osc message received : " << std::endl;
 	std::cout << "path: " << path << std::endl;
 	
-	OscMessageType message;
-	ListType list;
-	
-	message.setPath(QString(path));
+  OscMessageType message;
+  ListType *list = (ListType*)message.getSubType(1);
 
+  message.setPath(QString(path));
+ 
 	for (int i=0; i<argc; i++) 
 	{
-		std::cout << "arg " << i << " " << types[i] << std::endl;
 		if (types[i]==LO_FLOAT) 
 		{	
 			ValueType *valuet = new ValueType();
 			valuet->setValue((float)argv[i]->f);
-			list.push_back(valuet);
+			list->push_back(valuet);
 		} else if (types[i]==LO_INT32) 
 		{
 			ValueType *valuet = new ValueType();
 			valuet->setValue((float)argv[i]->i32);
-			list.push_back(valuet);			
+			list->push_back(valuet);
 		} else if (types[i]==LO_DOUBLE)
 		{
 			ValueType *valuet = new ValueType();
 			valuet->setValue((float)argv[i]->d);
-			list.push_back(valuet);			
+			list->push_back(valuet);
 		} else if (types[i]==LO_STRING)
 		{
 			StringType *stringt = new StringType();
-			stringt->setValue(argv[i]->s);
-			list.push_back(stringt);			
+			stringt->setValue(&argv[i]->s);
+			list->push_back(stringt);
 		}	
 	}	
 	

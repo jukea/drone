@@ -100,7 +100,7 @@ void MetaGearListMenu::slotMenuItemSelected(int id)
   
   if (it == _menuItemIndexfileInfoMap->end())
   {
-    std::cout << "MetaGearListMenu item index mismatch!!!" << std::endl; 
+    //std::cout << "MetaGearListMenu item index mismatch!!!" << std::endl; 
     return;
   }
 

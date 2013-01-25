@@ -32,12 +32,15 @@ Makefile
 # Executable
 /drone
 /drone.app
+/lib
 
 # Eclipse
 .project
 .cproject
 
-# Netbeans
-nbproject/
+# Drone schemas
+*.drn
 
 .DS_Store
+
+/nbproject

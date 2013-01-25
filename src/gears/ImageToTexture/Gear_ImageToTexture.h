@@ -1,5 +1,5 @@
-/* VideoOutput.h
- * Copyright (C) 2004 Mathieu Guindon
+/* VideoChannelType.cpp
+ * Copyright (C) 2004 Mathieu Guindon, Julien Keable, Jean-Sebastien Senecal
  * This file is part of Drone.
  *
  * This program is free software; you can redistribute it and/or modify
@@ -16,36 +16,30 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
+#include "VideoChannelType.h"
 
-#ifndef VIDEOOUTPUT_INCLUDED
-#define VIDEOOUTPUT_INCLUDED
+#ifndef GEAR_IMAGE_TO_TEXTURE_INCLUDED
+#define GEAR_IMAGE_TO_TEXTURE_INCLUDED
 
-#include "ColorSpace.h"
+
+#include "Gear.h"
 #include "VideoRGBAType.h"
+ #include "TextureType.h"
 
-class VideoOutput
+
+class Gear_ImageToTexture : public Gear
 {
 public:
-  VideoOutput() : _xRes(0), _yRes(0), _fullscreen(false) {}
-  virtual ~VideoOutput(){}
 
-  virtual bool init(int xRes, int yRes, bool fullscreen)=0;    
-  virtual void render(const VideoRGBAType &image)=0;
-  virtual bool toggleFullscreen(bool fs, int xRes, int yRes, int xPos, int yPos)
-  {
-    Q_UNUSED(fs);Q_UNUSED(xRes);Q_UNUSED(yRes);Q_UNUSED(xPos);Q_UNUSED(yPos);
-    return true;
-  }
+  Gear_ImageToTexture();
+  virtual ~Gear_ImageToTexture();
 
-	bool fullscreen(){return _fullscreen;}
+  void runVideo();
+  virtual bool ready();
+private:
 
-protected:
-  int _xRes, _yRes;
-  int _bpp;
-  bool _fullscreen;
-
+  PlugIn<VideoRGBAType> *_VIDEO_IN;
+  PlugOut<TextureType> *_TEXTURE_OUT;
 };
 
-
 #endif
-

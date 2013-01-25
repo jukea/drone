@@ -1,5 +1,5 @@
-/* VideoRGBAType.h
- * Copyright (C) 2004 Mathieu Guindon, Julien Keable, Jean-Sebastien Senecal
+/* Gear_OscExtract.h
+ * Copyright (C) 2012 Jean-Sebastien Senecal
  * This file is part of Drone.
  *
  * This program is free software; you can redistribute it and/or modify
@@ -17,29 +17,27 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef TEXTUREGL_INCLUDED
-#define TEXTUREGL_INCLUDED
+#ifndef GEAR_OSCEXTRACT_INCLUDED
+#define GEAR_OSCEXTRACT_INCLUDED
 
-class VideoRGBAType;
+#include "Gear.h"
+#include "OscMessageType.h"
 
-class TextureGl
+#include "lo/lo.h"
+
+class Gear_OscExtract : public Gear
 {
 public:
-  TextureGl();
-  ~TextureGl();
+  Gear_OscExtract(Schema *schema, std::string uniqueName);
+  virtual ~Gear_OscExtract();
 
-  unsigned int createFromVideoRGBA(const VideoRGBAType &image, bool forceRecreate=false);  
-  unsigned int textureSizeX() const {return _textureSizeX;}
-  unsigned int textureSizeY() const {return _textureSizeY;}
-
+  void runVideo();
+	
 private:
-  
-  unsigned int _texture;
-  unsigned int _textureSizeX;
-  unsigned int _textureSizeY;
-  unsigned int _oldWidth;
-  unsigned int _oldHeight;
-
+			
+	PlugIn<OscMessageType> *_OSC_IN;
+	PlugOut<StringType> *_PATH_OUT;
+  PlugOut<ListType> *_ARGS_OUT;
 };
 
-#endif
+#endif 

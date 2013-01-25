@@ -26,8 +26,6 @@
 class VideoChannelType : public Array2DType<unsigned char>
 {
 public:
-  static const QString TYPENAME;
-  
   VideoChannelType(int width = 0,
                    int height = 0,
                    unsigned char fillValue = 0)
@@ -37,8 +35,7 @@ public:
 
   virtual ~VideoChannelType() {}
 
-  virtual QString typeName() const { return "VideoChannelType";}
-  QColor color() const { return QColor(63,63,63);}
+  TYPE_BASE_METHODS(VideoChannelType, (63, 63, 63))
 };
 
 #endif //VIDEOCHANNELTYPE_INCLUDED

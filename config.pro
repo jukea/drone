@@ -1,6 +1,6 @@
 CONFIG = qt warn_on thread debug resources
 
-#QT += qt3support
+QT += qt3support xml 
 
 message(Gears : Builing Makefile with the following config flags : $$CONFIG)
 
@@ -11,7 +11,7 @@ macx:QMAKE_CXXFLAGS += -fpermissive
 debug {
   OBJECTS_DIR = debug
   #QMAKE_CXXFLAGS +=-DDEBUG_LEVEL=0
-  QMAKE_CXXFLAGS +=-DDEBUG_LEVEL=2 -DSINGLE_THREADED_PLAYBACK
+  QMAKE_CXXFLAGS +=-DDEBUG_LEVEL=2 -DSINGLE_THREADED_PLAYBACK -O0
 }
 
 # Optimized settings

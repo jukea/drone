@@ -26,7 +26,6 @@
 class StringType : public AbstractType
 {
 public:
-  static const QString TYPENAME;
   StringType(QString defaultValue="", bool isAFilename=false)
 	: AbstractType(),
 	_value(defaultValue),
@@ -34,13 +33,12 @@ public:
 {}
   
   virtual ~StringType() {}
-  
+
+  TYPE_BASE_METHODS(StringType, (123, 173, 241))
+
 	void save(QDomDocument &doc, QDomElement &parent) const;
 	void load(QDomElement &typeElem, Drone::LoadingModeFlags lmf);
-	
-  virtual QString typeName() const { return TYPENAME; }
-  virtual QColor color() const { return QColor(123, 173, 241); }
-  
+	  
 	bool isAFilename(){return _isAFilename;}
   void setValue(const QString& value) { _value = value; }
 	const QString& value() const { return _value; }

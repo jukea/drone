@@ -1,16 +1,11 @@
 include(../../config.pro)
 
 TEMPLATE=subdirs
-
-SUBDIRS+= Osc \
-#TV \
+SUBDIRS= Osc \
 Oscilloscope \
 VideoOutput \
-AudioPushButton \
 AlphaMix \
 Blur \
-VideoSource \
-#Slider \
 KDTree\ 
 VideoMix \
 Edge \
@@ -18,7 +13,6 @@ AffineTransform \
 ApplyDisplaceGrid \
 AreaClip \
 AreaCreate \
-###AmuseOeil \
 AreaScale \
 AreaTranslate \
 AreaVideoSelect \
@@ -26,6 +20,8 @@ AreaVideoReplace \
 #AreaArrayMask \
 #AreaArrayClip \
 #AreaArrayVideoSelect \
+#AudioInput \
+#AudioOutput \
 Brightness \
 ClusteredDither \
 ColorAdjust \
@@ -34,61 +30,45 @@ Enveloppe \
 EmptyImage \
 FlatSignal \
 FillAlpha \
-#ListBox \
-#ImageCapture \
-#PushButton \
+ImageCapture \
+ImageToTexture \
 Rescale \
-#TouchPad \
-#TapTempo \
 ColorQuantize \
 Gamma \
 GenDisplaceGrid \
 GrayScale \
-HalfToning 
+HalfToning \
+#EmptyImage \
 #ImageSource \
 #ImageSequence \
-#Invert \
-#InvertAlpha \
-#PackList \
-#UnpackList \
+Invert \
+InvertAlpha \
+PackList \
+UnpackList \
 #OscMessage \
 #OscInput \
 #OscOutput \
 #OscFilter \
-#Saturation \
-#SelectFrame \
-#SetAlpha \
-#SignalStat \
-#SmearGrid \
-#Sobel \
-#StringOutput \
+Saturation \
+SelectFrame \
+SetAlpha \
+SignalStat \
+SmearGrid \
+Sobel \
 #StringGen \
-#StringFormat \
+StringFormat \
 #StringSource \
-#RandomValue \
-#Tempo \
-#ValueClamp \
-#VideoDelay \
+RandomValue \
+Tempo \
+ValueClamp \
+VideoDelay \
 #VideoInput \
-#VideoRecord \
+VideoRecord \
 #VideoSource \
-#VideoOffset \
+VideoOffset \
 #VideoReplaceAreas \
-#VideoSwitch \
-#ValueMix
-
-
-
-
-#Controls
-
-SUBDIRS+= controls/PushButton
-
-
-
-
-
-
+VideoSwitch \
+ValueMix
 
 agg {
 SUBDIRS+= SVGLoader \
@@ -96,6 +76,11 @@ Vectorial2Raster \
 VecAffineTrans
 }
 
+#Controls
+
+SUBDIRS+= controls/PushButton
+
 #linux specific gears
-unix:!macx:SUBDIRS += VideoInput AudioInput
+#unix:!macx:SUBDIRS += VideoInput AudioInput
+unix:!macx:SUBDIRS += VideoInput
 

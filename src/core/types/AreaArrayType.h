@@ -66,8 +66,7 @@ public:
   //! Destructor.
   virtual ~AreaArrayType() {}
 
-  virtual QString typeName() const { return "AreaArrayType"; }  
-  QColor color() const { return QColor(221,111,33); }
+  TYPE_BASE_METHODS(AreaArrayType, (221, 111, 33))
 };
 
 

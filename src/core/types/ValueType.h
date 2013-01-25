@@ -25,21 +25,18 @@
 class ValueType : public AbstractType
 {
 public:
-  static const QString TYPENAME;
-
   ValueType(float defaultValue=0.0f,
             float minValue=-1.0f,
             float maxValue=1.0f)
     : AbstractType(),
-	  _value(defaultValue),
+	    _value(defaultValue),
       _minValue(minValue),
       _maxValue(maxValue)
     {}
   
   virtual ~ValueType() {}
     
-  virtual QString typeName() const { return TYPENAME;}
-  virtual QColor color() const { return QColor(157, 208, 50); }
+  TYPE_BASE_METHODS(ValueType, (157, 208, 50))
 
 	void save(QDomDocument &doc, QDomElement &parent) const;
 	void load(QDomElement &typeElem);
