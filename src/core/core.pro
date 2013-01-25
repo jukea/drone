@@ -38,16 +38,13 @@ ColorSpace.h \
 Connection.h \
 Control.h \
 DroneCore.h \
-DroneGlobal.h \
+DroneGlobals.h \
 DroneMath.h \
 Engine.h \
 Gear.h \
 GearControl.h \
 GearFrei0r.h \
-GearClassification.h \
-GearGui.h \
 GearConverter.h \
-ISchemaEventListener.h \
 Media.h \
 MediaPool.h \
 MediaMovie.h \
@@ -109,7 +106,6 @@ Math.cpp \
 MediaPool.cpp \
 MediaMovie.cpp \
 MetaGear.cpp \
-MetaGearMaker.cpp \
 MidiEngine.cpp \
 Node.cpp \
 AbstractPlug.cpp \
