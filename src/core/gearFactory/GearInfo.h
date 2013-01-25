@@ -7,7 +7,7 @@
 #include "XMLHelper.h"
 #include "AbstractPlug.h"
 #include "../contrib/frei0r/spec/frei0r.h"
-#include "Control.h"
+#include "gui/BaseControl.h"
 #include "PlugInfo.h"
 
 class Gear;

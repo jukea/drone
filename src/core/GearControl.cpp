@@ -7,7 +7,7 @@ GearControl::GearControl(QString type) :
 
 }
 
-void GearControl::setControl(Control* control)
+void GearControl::setControl(BaseControl* control)
 {
   _control=control;
 }

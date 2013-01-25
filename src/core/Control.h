@@ -2,25 +2,19 @@
 #define CONTROL_INCLUDED
 
 #include <qgraphicswidget.h>
+#include "gui/BaseControl.h"
 
 class ControlPanel;
 class Gear;
 
-class Control : public QGraphicsWidget
+class Control : public QGraphicsWidget, public BaseControl
 {
 public:  
   Control();
   virtual ~Control();
-
-  virtual void onUpdate(){}
-  virtual void setGear(Gear* g){_parentGear=g;}
-  virtual void runVideo(){}
-  
-  // must return the GearControl class (Ex: Gear_PushButton)
-  virtual QString getGearType()=0;
-protected:
+private:
   ControlPanel *_parentControlPanel;
-  Gear* _parentGear;
+  
 };
 
 #endif

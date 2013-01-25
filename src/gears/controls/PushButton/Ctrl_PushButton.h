@@ -21,6 +21,7 @@
 #define GEARGUI_PUSHBUTTON_INCLUDED
 
 #include "controlHosts/PushButton/Gear_PushButton.h"
+#include "Control.h"
 
 #include <QGraphicsScene>
 //Added by qt3to4:

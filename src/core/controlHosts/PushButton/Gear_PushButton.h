@@ -20,7 +20,6 @@
 #ifndef GEAR_PUSHBUTTON_INCLUDED
 #define GEAR_PUSHBUTTON_INCLUDED
 
-#include "Control.h"
 #include "SignalType.h"
 #include "GearControl.h"
 

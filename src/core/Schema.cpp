@@ -4,7 +4,7 @@
 #include "gearFactory/GearMaker.h"
 //#include "SchemaTopoSort.h"
 #include "Connection.h"
-#include "BaseGearGui.h"
+#include "gui/BaseGearGui.h"
 #include "DroneCore.h"
 
 #include <QtXml>
@@ -19,7 +19,8 @@ const QString Schema::XML_TAGNAME = "Schema";
 Schema::Schema(MetaGear &parentMetaGear) :
 _needSynch(true),  
 _parentMetaGear(&parentMetaGear),
-_locked(false)
+_locked(false),
+_schemaGui(NULL)
 {
 }
 

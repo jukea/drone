@@ -13,7 +13,7 @@ class MetaGear;
 class Gear;
 class AbstractPlug;
 class Engine; 
-
+class BaseSchemaGui;
 
 class Schema : public QObject
 {
@@ -79,6 +79,9 @@ public:
   
 	//TODO:wtf?	
   void unSynch(){_needSynch=true;}  
+  
+  void setSchemaGui(BaseSchemaGui* bsg){_schemaGui=bsg;}
+  BaseSchemaGui* getSchemaGui(){return _schemaGui;}
 			  	
 signals:
 	void gearAdded(Schema &schema,Gear &gear);
@@ -106,6 +109,7 @@ private:
   QList<ScheduledConnection> _scheduledConnections;
   QList<ScheduledConnection> _scheduledDisconnections;
   QList<Gear*> _scheduledDeletes;
+  BaseSchemaGui* _schemaGui;
 };
 
 #endif

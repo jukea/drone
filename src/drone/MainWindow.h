@@ -40,8 +40,15 @@
 //#include "GuileBindings.h"
 
 class SchemaGui;
-class MetaGearEditor;
 class MetaGear;
+class MetaGear;
+class PanelScrollView;
+class SchemaEditor;
+class SchemaGui;
+class Engine;
+class QSplitter;
+class GearTreeView;
+class PlugPropertiesTable;
 
 class MainWindow : public QMainWindow
 {
@@ -63,7 +70,7 @@ public:
   void pushUndoCommand(QUndoCommand* c);
   SchemaGui* getSchemaGui() const {return _mainSchemaGui;}
   Project* getProject(){return _project;}
-  
+  void openMetaGear(MetaGear* metagear);
 public slots:
   void slotPlay(bool);
   void slotItemsMoved(QList<QString> &itemNames, QPointF dist);
@@ -103,8 +110,6 @@ private:
   Engine* _engine;
   QFrame* _frame;
   SchemaGui* _mainSchemaGui;
-  
-  MetaGearEditor *_metaGearEditor;
   
   QToolBar *_toolBar;
   
@@ -157,7 +162,17 @@ protected:
 	int _menuShowSmallGearsId;
 	bool _showSmallGears;
 
-//    PlayThread *_playThread;
+
+  MetaGear *_rootMetaGear;
+
+  QSplitter *_horizontalSplitter;
+  QSplitter *_verticalSplitter;
+
+  GearTreeView *_gearTreeView;
+  PlugPropertiesTable *_plugPropertiesTable;
+  PanelScrollView *_panelScrollView;
+  SchemaEditor *_schemaEditor;    
+
 };
 
 

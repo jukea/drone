@@ -65,6 +65,8 @@ public:
 
   SchemaEditor(QWidget *parent, SchemaGui *schemaGui, Engine * engine, PanelScrollView *panelScrollView);
   ~SchemaEditor();
+  void setSchemaGui(SchemaGui* sg);
+
   void buildContextMenus();
 
   void zoom(float factor);

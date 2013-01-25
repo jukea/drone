@@ -117,7 +117,7 @@ _boxNameColor(color)
     // If it has none, it's likely because it's instanciated from the core, without a GUI
     if(gear_c->getControl()!=NULL)
     {
-      setControl(gear_c->getControl());
+      setControl(static_cast<Control*>(gear_c->getControl()));
       rebuildLayoutDone=true;
     }
   }

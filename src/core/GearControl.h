@@ -3,7 +3,7 @@
 
 #include "Gear.h"
 
-class Control;
+class BaseControl;
 
 
 class GearControl : public Gear
@@ -15,11 +15,11 @@ public:
   GearControl(QString type);
 
   virtual ~GearControl(){}
-  void setControl(Control* control);
-  Control* getControl(){return _control;}
+  void setControl(BaseControl* control);
+  BaseControl* getControl(){return _control;}
   
 protected:
-  Control* _control;
+  BaseControl* _control;
   
 };
 

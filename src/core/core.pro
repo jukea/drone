@@ -32,11 +32,13 @@ error.h \
 AbstractPlug.h \
 Array.h \
 Array2D.h \
-BaseGearGui.h \
+gui/BaseGearGui.h \
+gui/BaseControl.h \
+Control.h \
+gui/BaseSchemaGui.h \
 CircularBuffer.h \
 ColorSpace.h \
 Connection.h \
-Control.h \
 DroneCore.h \
 DroneGlobals.h \
 DroneMath.h \
@@ -94,9 +96,11 @@ types/TextureType.h
 
 
 SOURCES += error.cpp \
-BaseGearGui.cpp \
-Connection.cpp \
+gui/BaseGearGui.cpp \
 Control.cpp \
+gui/BaseSchemaGui.cpp \
+gui/BaseControl.cpp \
+Connection.cpp \
 DroneCore.cpp \
 Engine.cpp \
 Gear.cpp \

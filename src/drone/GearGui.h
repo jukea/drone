@@ -28,7 +28,7 @@
 #include <QKeyEvent>
 #include <QLinearGradient>
 #include <QColor>
-#include "BaseGearGui.h"
+#include "gui/BaseGearGui.h"
 
 class Control;
 class Gear;

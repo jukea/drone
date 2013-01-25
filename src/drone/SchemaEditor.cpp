@@ -27,7 +27,6 @@
 #include "MetaGear.h"
 #include "commands/CommandGeneric.h"
 
-#include "MetaGearEditor.h"
 #include "PanelScrollView.h"
 #include "ControlPanel.h"
 #include "GearListMenu.h"
@@ -82,6 +81,14 @@ SchemaEditor::SchemaEditor(QWidget *parent, SchemaGui *schemaGui, Engine * engin
 
   resetTransform();
   setAcceptDrops(TRUE);
+}
+
+void SchemaEditor::setSchemaGui(SchemaGui* sg)
+{
+  _schemaGui=sg;
+  setScene(sg);
+  _schemaGui->setSchemaEditor(this);
+
 }
 
 void SchemaEditor::buildContextMenus()

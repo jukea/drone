@@ -24,6 +24,7 @@
 #include <QFileInfo>
 #include <QMenu>
 #include "Schema.h"
+#include "gui/BaseSchemaGui.h"
 
 class GearGui;
 class PlugBox;
@@ -34,13 +35,13 @@ class GearListMenu;
 class MetaGearListMenu;
 class SchemaEditor;
 
-class SchemaGui : public QGraphicsScene
+class SchemaGui : public QGraphicsScene, public BaseSchemaGui
 {
   Q_OBJECT
   
 public:
   enum MovingState {No,Pre,Yes};
-  SchemaGui(Schema *schema, Engine *engine);
+  SchemaGui(Schema *schema);
   ~SchemaGui();
 
   //Gear* addGear(QString type, QString name, int x, int y);
@@ -118,7 +119,6 @@ private:
 
   QPointF _pasteOffset;
   Schema *_schema;
-  Engine *_engine;
   qreal _maxZValue;
 
   // when selecting all items, used to bypass all single selectionChange signals but one 

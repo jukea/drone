@@ -37,7 +37,6 @@
 #include "SchemaGui.h"
 #include "SchemaEditor.h"
 #include "MetaGear.h"
-#include "MetaGearEditor.h"
 
 #include "MediaPoolItem.h"
 #include "MediaMovie.h"
@@ -48,6 +47,17 @@
 #include <QMessageBox>
 #include <QFile>
 #include <QToolButton>
+
+#include "MetaGear.h"
+#include "PanelScrollView.h"
+#include "GearTreeView.h"
+#include "PlugPropertiesTable.h"
+
+#include <QSplitter>
+#include <QLayout>
+//Added by qt3to4:
+#include <Q3VBoxLayout>
+#include <Q3BoxLayout>
 
 
 //#include "PreferencesDialog.h"
@@ -80,13 +90,58 @@ _menuFirstRecentSchemaId(-1),
 _menuShowSmallGearsId(false)
 {    
   _engine = new Engine(0);    
-  _metaGearEditor = new MetaGearEditor(this, _engine->mainMetaGear(), _engine);
-  _mainSchemaGui = _metaGearEditor->schemaGui();
-  SchemaEditor* schemaEditor = _metaGearEditor->schemaEditor();
+  _rootMetaGear = _engine->mainMetaGear();
+
+
   
-  _project = new Project(_engine->mainMetaGear()->getInternalSchema());
+  ////////////////////////// old code that was in MetaGearEditor.h :
   
-  setCentralWidget(_metaGearEditor);
+  QWidget * centralWidget = new QWidget(this);
+  QBoxLayout *layout = new QVBoxLayout(centralWidget, 1);
+
+  _mainSchemaGui = new SchemaGui(_rootMetaGear->getInternalSchema());
+
+  _horizontalSplitter = new QSplitter(Qt::Horizontal, centralWidget);
+  _verticalSplitter = new QSplitter(Qt::Vertical, _horizontalSplitter);
+
+  
+  _panelScrollView = NULL;
+  _gearTreeView = new GearTreeView(_verticalSplitter);
+  _gearTreeView->create();
+  _plugPropertiesTable = new PlugPropertiesTable(_verticalSplitter);
+
+
+  QWidget* schemaEditorContainer=new QWidget(_horizontalSplitter);
+  QBoxLayout *layout2 = new QVBoxLayout(schemaEditorContainer, 1);
+
+  QWidget* breadcrumb = new QWidget(schemaEditorContainer);
+  breadcrumb->setFixedHeight(20);
+  
+  _schemaEditor = new SchemaEditor(schemaEditorContainer, _mainSchemaGui, _engine, _panelScrollView);  
+  
+  
+  layout2->addWidget(breadcrumb);
+  layout2->addWidget(_schemaEditor);
+
+  _horizontalSplitter->moveToFirst(_verticalSplitter);
+  
+  layout->addWidget(_horizontalSplitter);
+  
+  //add the edited metagear to the panelScrollView
+  //_panelScrollView->addControlPanel(metaGear);
+	
+  QObject::connect(_schemaEditor->scene(), SIGNAL(gearSelected(GearGui*)), _plugPropertiesTable, SLOT(slotGearSelected(GearGui*)));
+
+  /////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////
+
+  
+  
+//  SchemaEditor* schemaEditor = _schemaEditor//;
+  
+  _project = new Project(_rootMetaGear->getInternalSchema());
+  
+  setCentralWidget(centralWidget);
 
   _toolBar = new QToolBar(this);
   addToolBar(_toolBar);
@@ -121,19 +176,19 @@ _menuShowSmallGearsId(false)
 
   
   _editMenu = menuBar->addMenu("&Edit");
-	_actSelectAll=_editMenu->addAction("Select all", schemaEditor, SLOT(onSelectAll()),  QKeySequence::SelectAll);
-  _actDeleteSelected=_editMenu->addAction("Delete selected", schemaEditor, SLOT(onDeleteSelected()), QKeySequence::Delete);
-	_actCopy=_editMenu->addAction("Copy", schemaEditor, SLOT(onGearCopy()), QKeySequence::Copy);
-	_actPaste=_editMenu->addAction("Paste", schemaEditor, SLOT(onGearPaste()), QKeySequence::Paste);
+	_actSelectAll=_editMenu->addAction("Select all", _schemaEditor, SLOT(onSelectAll()),  QKeySequence::SelectAll);
+  _actDeleteSelected=_editMenu->addAction("Delete selected", _schemaEditor, SLOT(onDeleteSelected()), QKeySequence::Delete);
+	_actCopy=_editMenu->addAction("Copy", _schemaEditor, SLOT(onGearCopy()), QKeySequence::Copy);
+	_actPaste=_editMenu->addAction("Paste", _schemaEditor, SLOT(onGearPaste()), QKeySequence::Paste);
 	_editMenu->addSeparator();
-  _actUndo =_editMenu->addAction("Undo", schemaEditor, SLOT(slotUndo()), QKeySequence::Undo);
-	_actRedo =_editMenu->addAction("Redo", schemaEditor, SLOT(slotRedo()), QKeySequence::Redo);
+  _actUndo =_editMenu->addAction("Undo", _schemaEditor, SLOT(slotUndo()), QKeySequence::Undo);
+	_actRedo =_editMenu->addAction("Redo", _schemaEditor, SLOT(slotRedo()), QKeySequence::Redo);
  
   _viewMenu = menuBar->addMenu("&View");
 	_viewMenu->setCheckable(true);
   
-  _actZoomIn = _viewMenu->addAction("Zoom in", schemaEditor, SLOT(onZoomIn()), Qt::CTRL+Qt::Key_Plus);
-  _actZoomOut = _viewMenu->addAction("Zoom out", schemaEditor, SLOT(onZoomOut()), Qt::CTRL+Qt::Key_Minus);
+  _actZoomIn = _viewMenu->addAction("Zoom in", _schemaEditor, SLOT(onZoomIn()), Qt::CTRL+Qt::Key_Plus);
+  _actZoomOut = _viewMenu->addAction("Zoom out", _schemaEditor, SLOT(onZoomOut()), Qt::CTRL+Qt::Key_Minus);
 
 
   _toolsMenu = menuBar->addMenu("&Tools");
@@ -180,14 +235,15 @@ _menuShowSmallGearsId(false)
     _recentSchemas<<filename;    
   }
   globalSettings.endGroup();
+    
+  
 }
 
 
 void MainWindow::finalize()
 {
-  SchemaEditor* schemaEditor = _metaGearEditor->schemaEditor();
-  SchemaGui* schemaGui = schemaEditor->getSchemaGui();
-  schemaEditor->buildContextMenus();
+  SchemaGui* schemaGui = _schemaEditor->getSchemaGui();
+  _schemaEditor->buildContextMenus();
   QObject::connect(schemaGui,SIGNAL(itemsMoved(QList<QString>&,QPointF)),this,SLOT(slotItemsMoved(QList<QString>&,QPointF)));
 }
 
@@ -195,6 +251,17 @@ MainWindow::~MainWindow()
 {
 
 }
+
+void MainWindow::openMetaGear(MetaGear* metagear)
+{
+  Q_ASSERT(metagear);
+  Schema* schema(metagear->getInternalSchema());
+  Q_ASSERT(schema);
+  
+  _schemaEditor->setSchemaGui(static_cast<SchemaGui*>(schema->getSchemaGui()));
+  
+}
+
 
 void MainWindow::slotItemsMoved(QList<QString>&itemUUIDs, QPointF dist)
 {

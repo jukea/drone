@@ -41,12 +41,11 @@ const int SchemaGui::DEFAULT_CANVAS_SIZE_X = 2048;
 const int SchemaGui::DEFAULT_CANVAS_SIZE_Y = 2048;
 
 
-SchemaGui::SchemaGui(Schema *schema, Engine *engine) :
+SchemaGui::SchemaGui(Schema *schema) :
   QGraphicsScene(0,0,DEFAULT_CANVAS_SIZE_X, DEFAULT_CANVAS_SIZE_Y),
   _activeConnection(NULL),
   _connecting(false),
   _pasteOffset(),
-  _engine(engine),
   _maxZValue(0),
   _selectionChangeNotificationBypass(false),
   _moving(No),
@@ -79,6 +78,8 @@ void SchemaGui::setSchema(Schema *schema)
 {
   clear(); 
   _schema = schema;
+  _schema->setSchemaGui(this);
+  
   QObject::connect(schema,SIGNAL(gearAdded(Schema&,Gear&)),this,SLOT(onGearAdded(Schema&,Gear&)));
   QObject::connect(schema,SIGNAL(gearRemoved(Schema&,Gear&)),this,SLOT(slotGearRemoved(Schema&,Gear&)));
   QObject::connect(schema,SIGNAL(connectionCreated(Schema&,Connection)),this,SLOT(onConnectionCreated(Schema&,Connection)));
@@ -91,6 +92,7 @@ void SchemaGui::setSchema(Schema *schema)
 void SchemaGui::onGearAdded(Schema &schema,Gear &gear)
 {
   Q_UNUSED(schema);
+  qDebug()<<gear.getUUID()<<" has been creatd in "<<this;
   //GearControl* controlGear;
   if (!gear.getGearGui())
   {
@@ -243,6 +245,10 @@ MetaGear* SchemaGui::newMetaGear(QPointF pos)
 { 
   CommandGeneric* com = new CommandGeneric();
   MetaGear *metaGear = GearMaker::instance()->makeNewMetaGear();    
+  
+  SchemaGui* newSchemaGui = new SchemaGui(metaGear->getInternalSchema());
+  qDebug()<<"new schemaGui creatde:"<<newSchemaGui;
+  metaGear->getInternalSchema()->setSchemaGui(newSchemaGui);
   
   MetaGearGui *gearGui = new MetaGearGui(metaGear);    
   metaGear->setGearGui(gearGui);

@@ -27,7 +27,7 @@
 #include <iostream>
 #include <sstream>
 #include <algorithm>
-#include "BaseGearGui.h"
+#include "gui/BaseGearGui.h"
 
 const QString Gear::XML_TAGNAME = "Gear";
 

@@ -60,13 +60,17 @@ bool GearInfoControl::bindPlugin()
 
 Gear* GearInfoControl::createGearInstance()
 {
-  Control* control;
+  BaseControl* control;
   if (_makeControl)
-    control = _makeControl();
+    control = dynamic_cast<BaseControl*>(_makeControl());
   else
     return NULL;
 
-  GearControl* gear = (GearControl*)GearMaker::instance()->makeGear(control->getGearType());
+  qDebug()<<control;
+  
+  GearMaker* gm(GearMaker::instance());
+  QString gt(control->getGearType());
+  GearControl* gear = (GearControl*)gm->makeGear(gt);
   if(!gear)
     return NULL;
   gear->setControl(control);

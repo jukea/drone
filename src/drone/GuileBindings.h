@@ -5,7 +5,6 @@
 #include "DroneCore.h"
 #include "MainWindow.h"
 #include "SchemaEditor.h"
-#include "MetaGearEditor.h"
 #include "MetaGear.h"
 #include "Engine.h"
 #include "Gear.h"

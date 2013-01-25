@@ -28,7 +28,7 @@
 #include "Gear.h"
 
 class GearInfo;
-class Control;
+class BaseControl;
 
 /**
  * note : parseGears have to be called to discover gears in path and populate the 
@@ -38,7 +38,7 @@ class GearMaker
 {
 public:									
   typedef Gear* (*GearCreator)();
-  typedef Control* (*ControlCreator)();
+  typedef BaseControl* (*ControlCreator)();
 
 	static GearMaker* instance();
 

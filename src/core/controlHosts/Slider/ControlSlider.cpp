@@ -4,7 +4,7 @@
 #include <Q3VBoxLayout>
 
 ControlSlider::ControlSlider(Gear* parentGear, ControlPanel *parentControlPanel) :
-  Control(parentGear, parentControlPanel)
+  BaseControl(parentGear, parentControlPanel)
 {
   _mainLayout = new Q3VBoxLayout(this, 1);
   _slider = new QSlider(Qt::Horizontal, this);

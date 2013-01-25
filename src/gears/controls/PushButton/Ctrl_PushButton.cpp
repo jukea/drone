@@ -35,7 +35,7 @@ const QColor Ctrl_PushButton::PUSHBUTTON_BOX_COLORON(185, 115, 25);
 
 extern "C"
 {
-  Control* makeControl()
+  BaseControl* makeControl()
   {
     return new Ctrl_PushButton();
   }
