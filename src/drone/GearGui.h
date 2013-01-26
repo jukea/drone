@@ -33,6 +33,7 @@
 class Control;
 class Gear;
 class PlugBox;
+class QGraphicsBlurEffect;
 class Engine;
 class QDomElement;
 class QDomDocument;
@@ -96,6 +97,8 @@ public:
   PlugBox* getInputPlugBox(QString name) const;
   PlugBox* getOutputPlugBox(QString name) const;
 
+  void startDiveInAnimation();
+  
   Gear* gear(){return _gear;};
 
   QColor colorAtY(qreal y);
@@ -125,12 +128,17 @@ public:
   
   int type() const {return Type;}
 
+  Q_PROPERTY( qreal opacityProxy READ opacityProxy WRITE setOpacityProxy )
+    
+  qreal opacityProxy() const {return _opacityProxy;} 
+  void setOpacityProxy(qreal val) {setOpacity(val);} 
+  
 public slots: 
   void redraw();
   void rebuildLayout();
 	
 protected:
-  
+  qreal _opacityProxy;
   void timerEvent(QTimerEvent*);
 
   virtual void paint(QPainter *painter,const QStyleOptionGraphicsItem *option, QWidget *widget);
@@ -140,6 +148,10 @@ protected:
   QList<PlugBox*> _outputPlugBoxes;
   QList<PlugBox*> _plugBoxes;//!contain all inputs and outputs
 
+  QGraphicsBlurEffect* _blur;
+  QPropertyAnimation* _diveInBlurRadiusAnimation;  
+  QPropertyAnimation* _diveInOpacityAnimation;  
+  
   bool _selected;
   layoutMode _layoutMode;
   

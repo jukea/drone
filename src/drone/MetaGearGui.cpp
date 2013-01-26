@@ -9,7 +9,7 @@
 #include "Gear.h"
 #include "MetaGear.h"
 #include "MainWindow.h"
-
+#include "SchemaEditor.h"
 MetaGearGui::MetaGearGui(Gear *pgear, QColor color):
 GearGui(pgear,color)
 {
@@ -22,6 +22,10 @@ MetaGearGui::~MetaGearGui()
 void MetaGearGui::mouseDoubleClickEvent ( QGraphicsSceneMouseEvent * event )
 {
   Q_UNUSED(event);
-  MainWindow::getInstance()->openMetaGear(_gear->getUUID());
+  startDiveInAnimation();
+  QList<QGraphicsView*> v(scene()->views());
+  if(v.count())
+    static_cast<SchemaEditor*>(v.first())->startDiveInAnimation();
+//  MainWindow::getInstance()->openMetaGear(_gear->getUUID());
 }
 

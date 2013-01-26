@@ -29,7 +29,6 @@ void Breadcrumb::setValue(QList<MetaGear*> list)
   }
   _str=strList.join(" > ");
   repaint();
-
 }
 
 

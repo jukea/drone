@@ -75,12 +75,24 @@ SchemaEditor::SchemaEditor(QWidget *parent, SchemaGui *schemaGui, Engine * engin
   setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
   setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
   
+  _diveInScaleAnimation = new QPropertyAnimation(this, "_scale");
+
   // render with OpenGL
   if(1)
     setViewport(new QGLWidget(QGLFormat(QGL::SampleBuffers)));
 
   resetTransform();
   setAcceptDrops(TRUE);
+}
+
+
+void SchemaEditor::startDiveInAnimation()
+{
+  _diveInScaleAnimation->setDuration(300);
+  _diveInScaleAnimation->setStartValue(_scale);
+  _diveInScaleAnimation->setEndValue(20);
+  _diveInScaleAnimation->setEasingCurve(QEasingCurve::InCirc);
+  _diveInScaleAnimation->start();
 }
 
 void SchemaEditor::setSchemaGui(SchemaGui* sg)

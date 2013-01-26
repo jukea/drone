@@ -37,6 +37,8 @@
 #include <QStyleOptionGraphicsItem>
 #include <QFontMetrics>
 #include <QGraphicsSceneMouseEvent>
+#include <QEasingCurve>
+#include <QGraphicsItemAnimation>
 
 const int GearGui::CANVAS_RTTI_GEAR = 2000;
 
@@ -106,6 +108,18 @@ _boxNameColor(color)
   dropShadow->setOffset(SHADOW_OFFSET);
   dropShadow->setColor(QColor(0, 0, 0, 120));
   setGraphicsEffect(dropShadow);
+
+
+
+  _blur = new QGraphicsBlurEffect();
+  _blur->setBlurRadius(0);
+  _blur->setBlurHints(QGraphicsBlurEffect::AnimationHint);
+  setGraphicsEffect(_blur);
+
+
+  _diveInBlurRadiusAnimation = new QPropertyAnimation(_blur, "blurRadius");
+  _diveInOpacityAnimation = new QPropertyAnimation(this, "opacityProxy");
+
   QObject::connect(_gear, SIGNAL(readyStatusChanged()), this, SLOT(redraw()));
 
   bool rebuildLayoutDone=false;
@@ -122,12 +136,26 @@ _boxNameColor(color)
     }
   }
   if(!rebuildLayoutDone)
-      rebuildLayout();
-
-  
-  
-  
+      rebuildLayout();  
 }
+
+void GearGui::startDiveInAnimation()
+{
+  _diveInBlurRadiusAnimation->setDuration(400);
+  _diveInBlurRadiusAnimation->setStartValue(0);
+  _diveInBlurRadiusAnimation->setEndValue(60);
+//  _diveInBlurRadiusAnimation->setEasingCurve(QEasingCurve::OutCubic);
+  //_diveInBlurRadiusAnimation->start();
+
+  _diveInOpacityAnimation->setDuration(300);
+  _diveInOpacityAnimation->setStartValue(1);
+  _diveInOpacityAnimation->setEndValue(0);
+  _diveInOpacityAnimation->setEasingCurve(QEasingCurve::OutCubic);
+  _diveInOpacityAnimation->start();
+
+}
+
+
 
 GearGui::~GearGui()
 {

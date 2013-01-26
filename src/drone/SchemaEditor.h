@@ -81,6 +81,15 @@ public:
   QMenu* getMetaGearContextMenu() const {return _metaGearContextMenu;}
   QMenu* getPlugContextMenu() const {return _plugContextMenu;}
   SchemaGui* getSchemaGui() const {return _schemaGui;}
+
+  
+  void startDiveInAnimation();
+
+  Q_PROPERTY( qreal _scale READ getScale WRITE setScale )
+    
+  qreal getScale() const {return _scale;} 
+  void setScale(qreal val) {zoom(_scale=val);} 
+  
 public slots:
 
   //common slots  
@@ -132,7 +141,8 @@ protected:
   GearGui *_contextGear;//when the context menu of a gear is pop, this is the gear that make the menu pop
   PlugBox *_contextPlug; // when the context menu of a plug is pop, this is the plug that make the menu pop
 
-  
+  QPropertyAnimation* _diveInScaleAnimation;  
+
   
   
 private:
@@ -145,7 +155,7 @@ private:
 
   Engine *_engine;
   SchemaGui *_schemaGui;
-  double _scale;
+  qreal _scale;
   qreal _maxZValue;
   
   // when true, ignore selectionChange signals

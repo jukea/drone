@@ -241,6 +241,7 @@ void SchemaGui::renameGear(GearGui *gearGui, QString newName)
   _schema->renameGear(*gearGui->gear(), newName);
 }
 
+
 MetaGear* SchemaGui::newMetaGear(QPointF pos)
 { 
   CommandGeneric* com = new CommandGeneric();
