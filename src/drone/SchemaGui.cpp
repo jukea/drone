@@ -92,7 +92,7 @@ void SchemaGui::setSchema(Schema *schema)
 void SchemaGui::onGearAdded(Schema &schema,Gear &gear)
 {
   Q_UNUSED(schema);
-  qDebug()<<gear.getUUID()<<" has been creatd in "<<this;
+  //qDebug()<<gear.getUUID()<<" has been creatd in "<<this;
   //GearControl* controlGear;
   if (!gear.getGearGui())
   {
@@ -248,7 +248,7 @@ MetaGear* SchemaGui::newMetaGear(QPointF pos)
   MetaGear *metaGear = GearMaker::instance()->makeNewMetaGear();    
   
   SchemaGui* newSchemaGui = new SchemaGui(metaGear->getInternalSchema());
-  qDebug()<<"new schemaGui creatde:"<<newSchemaGui;
+  //qDebug()<<"new schemaGui creatde:"<<newSchemaGui;
   metaGear->getInternalSchema()->setSchemaGui(newSchemaGui);
   
   MetaGearGui *gearGui = new MetaGearGui(metaGear);    
@@ -426,7 +426,6 @@ void SchemaGui::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)
   {
     if ((ci = qgraphicsitem_cast<ConnectionItem*>(el)))
     {
-      qDebug()<< "disconnect";
       CommandGeneric* com = new CommandGeneric();
 
       disconnect(ci->sourcePlugBox(), ci->destPlugBox());

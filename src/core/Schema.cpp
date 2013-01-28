@@ -413,6 +413,7 @@ bool Schema::load(QDomElement& parent, Drone::LoadingModeFlags lmf)
       Gear* existingGear = getGearByUUID(gearElem.attribute("UUID", ""));
       
       // If we can UPDATE and the gear already EXISTS in schema
+      // (i.e: when we're loading to restore a snapshot)
       if(lmf & Drone::UpdateWhenPossible && existingGear)
       {
         existingGear->load(gearElem, lmf);
@@ -426,22 +427,22 @@ bool Schema::load(QDomElement& parent, Drone::LoadingModeFlags lmf)
         if (newGear != NULL) 
         {
           QString newUUID = newGear->getUUID();
-          QString oldUUID = gearElem.attribute("UUID", "");
-          //addGear to schema with UUID "newUUID"
-          //qDebug()<<"GEARS:"<<_gears.keys();
+          QString existingUUID = gearElem.attribute("UUID", "");
 
-          newGear->load(gearElem,lmf);
-          
           // if the gear exists and we don't update (eg: when pasting)
           // we must give it a unique UUID
           if(existingGear && !lmf.testFlag(Drone::UpdateWhenPossible))
           {
-            // the gear UUID must be newUUID. It currently has oldUUID because
-            // of the previous call to "load". Change this and note it in the rename map
             newGear->setUUID(newUUID);
-            renameMap[oldUUID] = newUUID;
+            renameMap[existingUUID] = newUUID;
           }
+          // else, the new instance can keep the UUID from the XML
+          // i.e : loading from a file
+          else newGear->setUUID(existingUUID);
+
           addGear(*newGear);
+          newGear->load(gearElem,lmf);
+
           visitedGears<<newGear->getUUID();
         }
 

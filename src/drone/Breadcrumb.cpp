@@ -37,7 +37,7 @@ void Breadcrumb::onClick()
   if(_list.count()<2)
     return;
   _list.removeLast();
-  MainWindow::getInstance()->openMetaGear(_list.last()->getUUID());
+  MainWindow::getInstance()->closeMetaGear();
   qDebug()<<"Youhou!!";
 }
 

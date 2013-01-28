@@ -246,7 +246,8 @@ void Gear::load(QDomElement &gearElem, Drone::LoadingModeFlags lmf)
 {            
   Q_UNUSED(lmf);
   _instanceName = gearElem.attribute("Name","");
-  _uuid = gearElem.attribute("UUID","");
+  //if(loadUuid)
+  //  _uuid = gearElem.attribute("UUID","");
 
   _settings.load(gearElem);  
   //updateSettings();

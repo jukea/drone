@@ -83,7 +83,7 @@ public:
   SchemaGui* getSchemaGui() const {return _schemaGui;}
 
   
-  void startDiveInAnimation();
+  QPropertyAnimation* getDiveInAnimation(bool in);
 
   Q_PROPERTY( qreal _scale READ getScale WRITE setScale )
     
@@ -141,7 +141,6 @@ protected:
   GearGui *_contextGear;//when the context menu of a gear is pop, this is the gear that make the menu pop
   PlugBox *_contextPlug; // when the context menu of a plug is pop, this is the plug that make the menu pop
 
-  QPropertyAnimation* _diveInScaleAnimation;  
 
   
   

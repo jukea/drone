@@ -116,10 +116,6 @@ _boxNameColor(color)
   _blur->setBlurHints(QGraphicsBlurEffect::AnimationHint);
   setGraphicsEffect(_blur);
 
-
-  _diveInBlurRadiusAnimation = new QPropertyAnimation(_blur, "blurRadius");
-  _diveInOpacityAnimation = new QPropertyAnimation(this, "opacityProxy");
-
   QObject::connect(_gear, SIGNAL(readyStatusChanged()), this, SLOT(redraw()));
 
   bool rebuildLayoutDone=false;
@@ -139,20 +135,16 @@ _boxNameColor(color)
       rebuildLayout();  
 }
 
-void GearGui::startDiveInAnimation()
+QPropertyAnimation* GearGui::getDiveInAnimation(bool in)
 {
-  _diveInBlurRadiusAnimation->setDuration(400);
-  _diveInBlurRadiusAnimation->setStartValue(0);
-  _diveInBlurRadiusAnimation->setEndValue(60);
-//  _diveInBlurRadiusAnimation->setEasingCurve(QEasingCurve::OutCubic);
-  //_diveInBlurRadiusAnimation->start();
+  QPropertyAnimation* diveInOpacityAnimation;  
+  diveInOpacityAnimation = new QPropertyAnimation(this, "opacityProxy");
 
-  _diveInOpacityAnimation->setDuration(300);
-  _diveInOpacityAnimation->setStartValue(1);
-  _diveInOpacityAnimation->setEndValue(0);
-  _diveInOpacityAnimation->setEasingCurve(QEasingCurve::OutCubic);
-  _diveInOpacityAnimation->start();
-
+  diveInOpacityAnimation->setDuration(600);
+  diveInOpacityAnimation->setStartValue(in?1:0);
+  diveInOpacityAnimation->setEndValue(in?0:1);
+  diveInOpacityAnimation->start();
+  return diveInOpacityAnimation;  
 }
 
 
@@ -376,13 +368,11 @@ void GearGui::paint(QPainter *painter,const QStyleOptionGraphicsItem *option, QW
    QColor fillColor(getCurrentColor());
 
     const qreal lod = option->levelOfDetailFromTransform(painter->worldTransform());
-    if (lod < 0.2) {
-    /// do simple painting and return
-    }
-
+    
     // hack to compensate the fact that in Qt, 1 pixel wide stroke on a round 
     // integer coordinate sits exactly in the middle of 2 pixels...  
     painter->translate(.5 / painter->transform().m11(), .5 / painter->transform().m22());
+    
     
   QPen pen;
   pen.setWidthF(1);
@@ -406,9 +396,9 @@ void GearGui::paint(QPainter *painter,const QStyleOptionGraphicsItem *option, QW
   
   QLinearGradient gradient(0, 0, 0, _size.height());
   gradient.setColorAt(0, fillColor.lighter(300));
-  gradient.setColorAt(pixToGradientPos(2,_size.height()), fillColor.lighter(150));
+  gradient.setColorAt(pixToGradientPos(1.5,_size.height()), fillColor.lighter(150));
   gradient.setColorAt(pixToGradientPos(TITLE_BAR_HEIGHT,_size.height()), fillColor.lighter(130)); 
-  gradient.setColorAt(pixToGradientPos(TITLE_BAR_HEIGHT+1,_size.height()), fillColor); 
+  gradient.setColorAt(pixToGradientPos(TITLE_BAR_HEIGHT+0.0001,_size.height()), fillColor); 
   gradient.setColorAt(1, fillColor.darker(BOX_GRADIENT_DARKER_AMOUT)); 
   painter->setBrush(gradient);
   
@@ -426,18 +416,18 @@ void GearGui::paint(QPainter *painter,const QStyleOptionGraphicsItem *option, QW
   if (title.isEmpty())
     title=_gear->instanceName();
 	
-  painter->drawText(0,1, _size.width(), TITLE_BAR_HEIGHT, Qt::AlignHCenter | Qt::AlignVCenter, title);
+  if(lod>0.5)painter->drawText(0,1, _size.width(), TITLE_BAR_HEIGHT, Qt::AlignHCenter | Qt::AlignVCenter, title);
   
 	//ready box
-  //painter->setPen(Qt::black);
+  //painter->setPen(Qt::bla ck);
   //painter->setBrush(gear()->ready() ? GEAR_READY_COLOR : GEAR_NOT_READY_COLOR);
   //painter->drawRoundRect(sizeX - 10, 2, 8, 8, 50, 50);
 
   //plugboxes
   foreach(PlugBox* ipb,_inputPlugBoxes)
-    ipb->draw(painter);
+    ipb->draw(painter,lod);
   foreach(PlugBox* opb,_outputPlugBoxes)
-    opb->draw(painter);
+    opb->draw(painter,lod);
 
 }
 

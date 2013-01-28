@@ -97,7 +97,7 @@ public:
   PlugBox* getInputPlugBox(QString name) const;
   PlugBox* getOutputPlugBox(QString name) const;
 
-  void startDiveInAnimation();
+  QPropertyAnimation* getDiveInAnimation(bool in);
   
   Gear* gear(){return _gear;};
 
@@ -149,8 +149,6 @@ protected:
   QList<PlugBox*> _plugBoxes;//!contain all inputs and outputs
 
   QGraphicsBlurEffect* _blur;
-  QPropertyAnimation* _diveInBlurRadiusAnimation;  
-  QPropertyAnimation* _diveInOpacityAnimation;  
   
   bool _selected;
   layoutMode _layoutMode;

@@ -83,7 +83,7 @@ void PlugBox::drawSelected(QPainter *painter)
 }   
 
 // Draws the actual plug with corresponding label
-void PlugBox::draw(QPainter *painter)
+void PlugBox::draw(QPainter *painter, qreal lod)
 { 
   int halfGearSizeX = _gearGui->size().width() / 2;    
   painter->setPen(QPen(Qt::black,1));
@@ -99,24 +99,26 @@ void PlugBox::draw(QPainter *painter)
       _extrudedRoundBoxColor = cay;
 //    
   //the round box around the plug
-  if (_plug->inOut() == IN)    
+  if(lod>0.6)
   {
-    painter->setBrush(_extrudedRoundBoxColor);
-    painter->drawPie(_pos.x() - 3, _pos.y() - 4, 16, 16, 1960, 1840);
-    painter->setPen(Qt::NoPen);
-    painter->setBrush(cay);
-    painter->drawRect(QRectF(_pos.x()+0.5, _pos.y()-4, 2.5, 15.5));
-    
+    if (_plug->inOut() == IN)
+    {
+      painter->setBrush(_extrudedRoundBoxColor);
+      painter->drawPie(_pos.x() - 3, _pos.y() - 4, 16, 16, 1960, 1840);
+      painter->setPen(Qt::NoPen);
+      painter->setBrush(cay);
+      painter->drawRect(QRectF(_pos.x() + 0.5, _pos.y() - 4, 2.5, 15.5));
+
+    }
+    else
+    {
+      painter->setBrush(_extrudedRoundBoxColor);
+      painter->drawPie(_pos.x() - 5, _pos.y() - 4, 16, 16, 920, -1840);
+      painter->setPen(Qt::NoPen);
+      painter->setBrush(cay);
+      painter->drawRect(QRectF(_pos.x() + 5, _pos.y() - 4, 2.5, 15.5));
+    }
   }
-  else
-  {
-    painter->setBrush(_extrudedRoundBoxColor);
-    painter->drawPie(_pos.x() - 5, _pos.y() - 4, 16, 16, 920, -1840);
-    painter->setPen(Qt::NoPen);
-    painter->setBrush(cay);
-    painter->drawRect(QRectF(_pos.x()+5, _pos.y()-4, 2.5, 15.5));
-  }
-   
       
   painter->setPen(Qt::black);
   painter->setBrush(color());
@@ -124,7 +126,7 @@ void PlugBox::draw(QPainter *painter)
   //the plugbox
   painter->drawEllipse(_pos.x() - _hilightScaling, _pos.y() - _hilightScaling, PLUGBOX_RADIUS + _hilightScaling*2, PLUGBOX_RADIUS + _hilightScaling*2);
   
-  painter->setFont(SHORTNAME_FONT);  
+  if(lod>0.5)painter->setFont(SHORTNAME_FONT);  
   
   if (_status==HILIGHTED)
     painter->setPen(Qt::blue);
@@ -132,7 +134,7 @@ void PlugBox::draw(QPainter *painter)
     painter->setPen(Qt::white);
 
   // if gear's layoutmode is normal, then display plugnames
-  if (_gearGui->getLayoutMode() == GearGui::normal)
+  if (_gearGui->getLayoutMode() == GearGui::normal && lod>0.5)
   {
 
     //align text left or right if In or Out

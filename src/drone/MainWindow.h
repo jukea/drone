@@ -72,6 +72,7 @@ public:
   SchemaGui* getSchemaGui() const {return _mainSchemaGui;}
   Project* getProject(){return _project;}
   void openMetaGear(QString metaGearUuid);
+  void closeMetaGear();
 public slots:
   void slotPlay(bool);
   void slotItemsMoved(QList<QString> &itemNames, QPointF dist);
@@ -95,9 +96,14 @@ public slots:
   // Not really the job of the main window
   void initFonts();
   
+protected slots:
+  void openMetaGearAnimationCompleted();
+  void closeMetaGearAnimationCompleted();
   
  protected:
 
+  MetaGear *_openingMetaGear;
+  QParallelAnimationGroup* _animationGroup;
   static MainWindow* instance;
   void timerEvent(QTimerEvent*);
 

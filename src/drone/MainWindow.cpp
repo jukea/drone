@@ -81,6 +81,8 @@ MainWindow* MainWindow::getInstance()
 
 MainWindow::MainWindow() : 
 QMainWindow(), 
+_openingMetaGear(NULL),
+_animationGroup(NULL),
 _engine(NULL), 
 _frame(NULL), 
 _mainSchemaGui(NULL), 
@@ -114,7 +116,8 @@ _menuShowSmallGearsId(false)
   _breadcrumb = new Breadcrumb(schemaEditorContainer);
   
   _schemaEditor = new SchemaEditor(schemaEditorContainer, _mainSchemaGui, _engine, _panelScrollView);  
-  
+  _animationGroup = new QParallelAnimationGroup;
+
   
   layout2->addWidget(_breadcrumb);
   layout2->addWidget(_schemaEditor);
@@ -190,7 +193,7 @@ _menuShowSmallGearsId(false)
   _toolsMenu = menuBar->addMenu("&Tools");
   _actPreferences = _toolsMenu->addAction("Preferences", this, SLOT(slotMenuPreferences()));
 
-
+  
   // add actions to toolbar
   _toolBar->addAction(_actPlayPause);
   _toolBar->addSeparator();
@@ -257,14 +260,76 @@ void MainWindow::popBreadcrumb()
 void MainWindow::openMetaGear(QString metaGearUuid)
 {
 
-  MetaGear* metagear = HierarchyManager::getInstance()->getMetaGearByUUID(metaGearUuid);
+  _openingMetaGear = HierarchyManager::getInstance()->getMetaGearByUUID(metaGearUuid);
 
-  Q_ASSERT(metagear);
-  Schema * schema(metagear->getInternalSchema());
+  GearGui* ggui = (GearGui*)_openingMetaGear->getGearGui();
+  
+  _animationGroup = new QParallelAnimationGroup;
+  _animationGroup->addAnimation(_schemaEditor->getDiveInAnimation(true));
+  _animationGroup->addAnimation(ggui->getDiveInAnimation(true));
+  
+  _animationGroup->start();
+
+  QObject::connect(_animationGroup, SIGNAL(finished()), this, SLOT(openMetaGearAnimationCompleted()));
+
+}
+
+void MainWindow::openMetaGearAnimationCompleted()
+{
+  delete _animationGroup;
+  Q_ASSERT(_openingMetaGear);
+  Schema * schema(_openingMetaGear->getInternalSchema());
   Q_ASSERT(schema);
-  _activeMetaGear = metagear;
+  _activeMetaGear = _openingMetaGear;
   _schemaEditor->setSchemaGui(static_cast<SchemaGui*> (schema->getSchemaGui()));
-  _breadcrumb->setValue(metagear->getPathToSelf());
+  _breadcrumb->setValue(_openingMetaGear->getPathToSelf());
+  _openingMetaGear=NULL;
+  _schemaEditor->centerOn(static_cast<SchemaGui*>(schema->getSchemaGui())->itemsBoundingRect().center());
+  //qDebug()<<"center on "<<static_cast<SchemaGui*>(schema->getSchemaGui())->itemsBoundingRect();
+}
+
+
+
+
+
+
+
+void MainWindow::closeMetaGear()
+{
+  if(_activeMetaGear==_rootMetaGear)
+  {
+    qDebug()<<"Can't pop out of root metagear!";
+    return;
+  }
+  _openingMetaGear = _activeMetaGear;
+  _activeMetaGear = _activeMetaGear->parentSchema()->getParentMetaGear();
+  
+  Q_ASSERT(_openingMetaGear);
+  Schema * schema(_activeMetaGear->getInternalSchema());
+  Q_ASSERT(schema);
+  _schemaEditor->setSchemaGui(static_cast<SchemaGui*> (schema->getSchemaGui()));
+  _breadcrumb->setValue(_activeMetaGear->getPathToSelf());
+ 
+  
+  
+  GearGui* ggui = (GearGui*)_openingMetaGear->getGearGui();
+  _schemaEditor->centerOn(ggui);
+  //qDebug()<<"Here!"<<(void*)ggui; 
+  
+  _animationGroup = new QParallelAnimationGroup;
+  _animationGroup->addAnimation(_schemaEditor->getDiveInAnimation(false));
+  _animationGroup->addAnimation(ggui->getDiveInAnimation(false));
+  
+  _animationGroup->start();
+
+  QObject::connect(_animationGroup, SIGNAL(finished()), this, SLOT(closeMetaGearAnimationCompleted()));
+
+}
+
+void MainWindow::closeMetaGearAnimationCompleted()
+{
+  delete _animationGroup;
+  _openingMetaGear=NULL;
 }
 
 

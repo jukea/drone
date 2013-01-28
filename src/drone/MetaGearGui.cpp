@@ -22,10 +22,9 @@ MetaGearGui::~MetaGearGui()
 void MetaGearGui::mouseDoubleClickEvent ( QGraphicsSceneMouseEvent * event )
 {
   Q_UNUSED(event);
-  startDiveInAnimation();
   QList<QGraphicsView*> v(scene()->views());
   if(v.count())
-    static_cast<SchemaEditor*>(v.first())->startDiveInAnimation();
+    MainWindow::getInstance()->openMetaGear(_gear->getUUID());
 //  MainWindow::getInstance()->openMetaGear(_gear->getUUID());
 }
 

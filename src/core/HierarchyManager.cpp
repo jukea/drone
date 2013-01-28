@@ -67,3 +67,15 @@ MetaGear* HierarchyManager::getMetaGearByUUID(QString uuid)
   return _metaGearMap[uuid];
 }
 
+MetaGear* HierarchyManager::getLastAdded()
+{
+  MetaGear* g;
+  QMapIterator<QString, MetaGear*> i(_metaGearMap);
+  while (i.hasNext()) 
+  {
+   i.next();
+   qDebug()<<i.key()<<":"<<i.value();
+   return i.value();
+  }
+  return g;
+}

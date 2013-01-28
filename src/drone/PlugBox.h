@@ -43,7 +43,7 @@ public:
   virtual ~PlugBox();
 
   QColor color();
-  void draw(QPainter *painter);
+  void draw(QPainter *painter, qreal lod);
   void drawSelected(QPainter *painter);
   void setPos(QPointF pos){_pos=pos;}
   bool hit(QPointF pos);

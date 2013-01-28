@@ -70,12 +70,11 @@ SchemaEditor::SchemaEditor(QWidget *parent, SchemaGui *schemaGui, Engine * engin
   setDragMode(QGraphicsView::RubberBandDrag);
   setRenderHint(QPainter::Antialiasing, true);
 
-  setFrameStyle(Sunken | StyledPanel);
-  setOptimizationFlags(QGraphicsView::DontSavePainterState | QGraphicsView::IndirectPainting);
-  setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
+  //setFrameStyle(Sunken | StyledPanel);
+  setOptimizationFlags(QGraphicsView::DontSavePainterState);
+  //setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
   setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
   
-  _diveInScaleAnimation = new QPropertyAnimation(this, "_scale");
 
   // render with OpenGL
   if(1)
@@ -86,19 +85,26 @@ SchemaEditor::SchemaEditor(QWidget *parent, SchemaGui *schemaGui, Engine * engin
 }
 
 
-void SchemaEditor::startDiveInAnimation()
+QPropertyAnimation* SchemaEditor::getDiveInAnimation( bool in )
 {
-  _diveInScaleAnimation->setDuration(300);
-  _diveInScaleAnimation->setStartValue(_scale);
-  _diveInScaleAnimation->setEndValue(20);
-  _diveInScaleAnimation->setEasingCurve(QEasingCurve::InCirc);
-  _diveInScaleAnimation->start();
+  QPropertyAnimation* diveInScaleAnimation;  
+
+  diveInScaleAnimation = new QPropertyAnimation(this, "_scale");
+  diveInScaleAnimation->setDuration(600);
+  diveInScaleAnimation->setStartValue(in?_scale:15);
+  diveInScaleAnimation->setEndValue(in?15:1);
+  if(in)
+    diveInScaleAnimation->setEasingCurve(QEasingCurve::InQuint);
+  else
+    diveInScaleAnimation->setEasingCurve(QEasingCurve::OutQuint);
+  return diveInScaleAnimation;
 }
 
 void SchemaEditor::setSchemaGui(SchemaGui* sg)
 {
   _schemaGui=sg;
   setScene(sg);
+  zoom(1);
   _schemaGui->setSchemaEditor(this);
 
 }
@@ -280,6 +286,7 @@ void SchemaEditor::onGearCopy()
   doc.save(stream,4);
   _engine->setClipboardText(str.latin1());
   qDebug()<<"copied! size:"<<_engine->getClipboardText().length();
+  //qDebug()<<"copied!:"<<_engine->getClipboardText();
   
 }
 
@@ -434,28 +441,6 @@ void SchemaEditor::zoom(float factor)
   update();     
 }
 
-/* legacy code ....... for reference
-  
- * void SchemaEditor::contentsMouseDoubleClickEvent(QMouseEvent *mouseEvent)
-{    
-
- * //handle double-click on metagear
-    if (gearGui!=NULL && (gearGui->gear()->kind() == Gear::METAGEAR))
-    {
-      QDialog metaGearEditorDialog(this);  
-      Q3VBoxLayout layout(&metaGearEditorDialog, 1);
-      metaGearEditorDialog.setCaption(gearGui->gear()->name().c_str());
-      metaGearEditorDialog.resize(640,480);
-      MetaGearEditor metaGearEditor(&metaGearEditorDialog, (MetaGear*)gearGui->gear(), _engine);
-      layout.addWidget(&metaGearEditor);
-      metaGearEditorDialog.exec();
-      
-      //todo : temp...
-      ((MetaGear*)(gearGui->gear()))->createPlugs();
-}
-
- */
-
 // add a gear by name and view coordinates
 void SchemaEditor::addGear(QString name, QPoint pos)
 {
@@ -480,7 +465,7 @@ void SchemaEditor::dragEnterEvent(QDragEnterEvent *event)
  {
      if (event->mimeData()->hasText()) {
              event->accept();
-             qDebug()<<"accept!";
+             //qDebug()<<"accept!";
      } else {
          event->ignore();
      }
@@ -491,7 +476,7 @@ void SchemaEditor::dragMoveEvent ( QDragMoveEvent * event )
 {
      if (event->mimeData()->hasText()) {
              event->accept();
-             qDebug()<<"accept move!";
+             //qDebug()<<"accept move!";
      } else {
          event->ignore();
      }
@@ -500,10 +485,8 @@ void SchemaEditor::dragMoveEvent ( QDragMoveEvent * event )
 void SchemaEditor::dropEvent(QDropEvent* event)
 {
   QString text;
-  qDebug()<<"here#";
      if (event->mimeData()->hasText()) {
              event->accept();
-             qDebug()<<"addgear!";
             addGear(event->mimeData()->text(), event->pos());
      } else {
          event->ignore();

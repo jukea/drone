@@ -28,6 +28,7 @@ class HierarchyManager: public QObject {
   virtual ~HierarchyManager();
   void setRootMetaGear(MetaGear*);
   MetaGear* getRootMetaGear(){return _rootMetaGear;}
+  MetaGear* getLastAdded();
   
 public slots:
   
