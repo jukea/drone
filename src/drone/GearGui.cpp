@@ -140,7 +140,7 @@ QPropertyAnimation* GearGui::getDiveInAnimation(bool in)
   QPropertyAnimation* diveInOpacityAnimation;  
   diveInOpacityAnimation = new QPropertyAnimation(this, "opacityProxy");
 
-  diveInOpacityAnimation->setDuration(600);
+  diveInOpacityAnimation->setDuration(300);
   diveInOpacityAnimation->setStartValue(in?1:0);
   diveInOpacityAnimation->setEndValue(in?0:1);
   diveInOpacityAnimation->start();

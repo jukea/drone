@@ -90,7 +90,7 @@ QPropertyAnimation* SchemaEditor::getDiveInAnimation( bool in )
   QPropertyAnimation* diveInScaleAnimation;  
 
   diveInScaleAnimation = new QPropertyAnimation(this, "_scale");
-  diveInScaleAnimation->setDuration(600);
+  diveInScaleAnimation->setDuration(300);
   diveInScaleAnimation->setStartValue(in?_scale:15);
   diveInScaleAnimation->setEndValue(in?15:1);
   if(in)
